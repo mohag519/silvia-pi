@@ -337,8 +337,9 @@ if __name__ == '__main__':
   piderr = 0
   weberr = 0
   weberrflag = 0
+  print('line340 entering urlhc')
   urlhc = 'http://localhost:'+str(conf.port)+'/healthcheck'
-
+  print('line341 passed urlhc')
   lasti = pidstate['i']
   sleep(1)
 
