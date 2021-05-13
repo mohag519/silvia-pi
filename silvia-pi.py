@@ -159,7 +159,7 @@ def rest_server(dummy,state):
   basedir = os.path.dirname(__file__)
   wwwdir = basedir+'/www/'
 
-  @route('/tst')
+  @route('/')
   def docroot():
     return "hello world"#static_file('index.html',wwwdir)
 
@@ -225,7 +225,7 @@ def rest_server(dummy,state):
   def healthcheck():
     return 'OK'
 
-  run(host='0.0.0.0',port=conf.port,server='cheroot')
+  run(host='0.0.0.0',port=conf.port,server='auto')
 
 if __name__ == '__main__':
   from multiprocessing import Process, Manager
