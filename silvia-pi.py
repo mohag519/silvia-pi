@@ -156,7 +156,7 @@ def rest_server(dummy,state):
   import config as conf
   import os
 
-  basedir = os.path.dirname(__file__)
+  basedir = /root/silvia-pi#os.path.dirname(__file__)
   wwwdir = basedir+'/www/'
 
   @route('/')
