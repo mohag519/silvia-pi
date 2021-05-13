@@ -159,7 +159,7 @@ def rest_server(dummy,state):
   basedir = os.path.dirname(__file__)
   wwwdir = basedir+'/www/'
 
-  @route('/')
+  @route('/tst')
   def docroot():
     return "hello world"#static_file('index.html',wwwdir)
 
