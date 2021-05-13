@@ -161,7 +161,7 @@ def rest_server(dummy,state):
 
   @route('/')
   def docroot():
-    return static_file('test.txt',wwwdir)
+    return wwwdir #static_file('test.txt',wwwdir)
 #     return static_file('index.html',wwwdir)
 
 #   @route('/<filepath:path>')
