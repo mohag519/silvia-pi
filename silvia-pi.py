@@ -162,11 +162,12 @@ def rest_server(dummy,state):
   @route('/')
   def docroot():
 #     return wwwdir #static_file('test.txt',wwwdir)
+    print('os path',os.path.dirname(__file__))
     return static_file('index.html',wwwdir)
 
-#   @route('/<filepath:path>')
-#   def servfile(filepath):
-#     return static_file(filepath,wwwdir)
+  @route('/<filepath:path>')
+  def servfile(filepath):
+    return static_file(filepath,wwwdir)
 
   @route('/curtemp')
   def curtemp():
