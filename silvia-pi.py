@@ -156,13 +156,13 @@ def rest_server(dummy,state):
   import config as conf
   import os
 
-  basedir = '/root/silvia-pi'#os.path.dirname(__file__)
+  basedir = os.path.dirname(os.path.abspath(__file__)) #'/root/silvia-pi'#os.path.dirname(__file__)
   wwwdir = basedir+'/www/'
 
   @route('/')
   def docroot():
 #     return wwwdir #static_file('test.txt',wwwdir)
-    print('os path',os.path.dirname(__file__))
+    print('os path',os.path.dirname(os.path.abspath(__file__)))
     return static_file('index.html',wwwdir)
 
   @route('/<filepath:path>')
