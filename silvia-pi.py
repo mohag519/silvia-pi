@@ -12,7 +12,7 @@ def he_control_loop(dummy,state):
 
   heating = False
 
-  try:
+  try:#
     while True:
       if state['snoozeon'] == True :
         now = datetime.now()
