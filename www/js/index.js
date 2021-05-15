@@ -97,7 +97,7 @@ setInterval(function() {
           $("#btnSnooze").show();
           $("#btnSnoozeC").hide();
         }
-        curtemp.append(new Date().getTime(), resp.tempf);
+        curtemp.append(new Date().getTime(), resp.tempc);
         settemp.append(new Date().getTime(), resp.settemp);
         settempm.append(new Date().getTime(), resp.settemp-4);
         settempp.append(new Date().getTime(), resp.settemp+4);
@@ -106,7 +106,7 @@ setInterval(function() {
         dterm.append(new Date().getTime(), resp.dterm);
         pidval.append(new Date().getTime(), resp.pidval);
         avgpid.append(new Date().getTime(), resp.avgpid);
-        $("#curtemp").html(resp.tempf.toFixed(2));
+        $("#curtemp").html(resp.tempc.toFixed(2));
         $("#pterm").html(resp.pterm.toFixed(2));
         $("#iterm").html(resp.iterm.toFixed(2));
         $("#dterm").html(resp.dterm.toFixed(2));
