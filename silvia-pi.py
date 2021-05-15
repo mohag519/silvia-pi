@@ -183,9 +183,11 @@ def rest_server(dummy,state):
         state['settemp'] = settemp
         return str(settemp)
       else:
-        abort(400,'Set temp out of range 200-260.')
+        print("wrong temp 186")
+        # abort(400,'Set temp out of range 200-260.')
     except:
-      abort(400,'Invalid number for set temp.')
+      print("line189 wrong number set temp")
+      # abort(400,'Invalid number for set temp.')
 
   @get('/snooze')
   def get_snooze():
@@ -197,7 +199,8 @@ def rest_server(dummy,state):
     try:
       datetime.strptime(snooze,'%H:%M')
     except:
-      abort(400,'Invalid time format.')
+      print("line202,wrong time format")
+      # abort(400,'Invalid time format.')
     state['snoozeon'] = True
     state['snooze'] = snooze
     return str(snooze)
