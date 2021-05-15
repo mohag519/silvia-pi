@@ -91,14 +91,14 @@ def pid_loop(dummy,state):
       else:
         nanct = 0
 
-      tempf = c_to_f(tempc)
-      temphist[i%5] = tempf
+      # tempf = c_to_f(tempc)
+      temphist[i%5] = tempc
       avgtemp = sum(temphist)/len(temphist)
 
-      if avgtemp < 100 :
+      if avgtemp < 30 :
         lastcold = i
 
-      if avgtemp > 200 :
+      if avgtemp > 90 :
         lastwarm = i
 
       if iscold and (i-lastcold)*conf.sample_time > 60*15 :
@@ -124,7 +124,7 @@ def pid_loop(dummy,state):
         avgpid = sum(pidhist)/len(pidhist)
 
       state['i'] = i
-      state['tempf'] = round(tempf,2)
+      state['tempc'] = round(tempc,2)
       state['avgtemp'] = round(avgtemp,2)
       state['pidval'] = round(pidout,2)
       state['avgpid'] = round(avgpid,2)
@@ -179,7 +179,7 @@ def rest_server(dummy,state):
   def post_settemp():
     try:
       settemp = float(request.forms.get('settemp'))
-      if settemp >= 200 and settemp <= 260 :
+      if settemp >= conf.low_temp_b and settemp <= conf.high_temp_b :
         state['settemp'] = settemp
         return str(settemp)
       else:

@@ -13,6 +13,10 @@ set_temp = 221.
 # Default alarm time
 snooze = '07:00'
 
+#temp lowpoint and high point
+low_temp_b = 85
+high_temp_b = 110
+
 # Main loop sample rate in seconds
 sample_time = 0.1
 
