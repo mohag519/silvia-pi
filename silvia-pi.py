@@ -162,7 +162,7 @@ def rest_server(dummy,state):
   @route('/')
   def docroot():
 #     return static_file('index.html',wwwdir)
-    return os.path.dirname(os.path.abspath(__file__)
+    return os.path.dirname(os.path.abspath(__file__))
 
   @route('/<filepath:path>')
   def servfile(filepath):
