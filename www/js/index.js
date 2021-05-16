@@ -199,6 +199,9 @@ setInterval(function () {
 				$("TimerOnSu").html(resp.TimerOnSu);
 				$("TimerOffSu").html(resp.TimerOffSu);
 			},
+			complete: function () {
+				lastreqdone = 1;
+			},
 		});
 
 		lastreqdone = 0;
