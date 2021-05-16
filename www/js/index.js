@@ -217,18 +217,18 @@ setInterval(function () {
 				console.log(resp);
 				$("#TimerOnMo").html(resp.TimerOnMo);
 				$("#TimerOffMo").html(resp.TimerOffMo);
-				$("TimerOnTu").html(resp.TimerOnTu);
-				$("TimerOffTu").html(resp.TimerOffTu);
-				$("TimerOnWe").html(resp.TimerOnWe);
-				$("TimerOffWe").html(resp.TimerOffWe);
-				$("TimerOnTh").html(resp.TimerOnTh);
-				$("TimerOffTh").html(resp.TimerOffTh);
-				$("TimerOnFr").html(resp.TimerOnFr);
-				$("TimerOffFr").html(resp.TimerOffFr);
-				$("TimerOnSa").html(resp.TimerOnSa);
-				$("TimerOffSa").html(resp.TimerOffSa);
-				$("TimerOnSu").html(resp.TimerOnSu);
-				$("TimerOffSu").html(resp.TimerOffSu);
+				$("#TimerOnTu").html(resp.TimerOnTu);
+				$("#TimerOffTu").html(resp.TimerOffTu);
+				$("#TimerOnWe").html(resp.TimerOnWe);
+				$("#TimerOffWe").html(resp.TimerOffWe);
+				$("#TimerOnTh").html(resp.TimerOnTh);
+				$("#TimerOffTh").html(resp.TimerOffTh);
+				$("#TimerOnFr").html(resp.TimerOnFr);
+				$("#TimerOffFr").html(resp.TimerOffFr);
+				$("#TimerOnSa").html(resp.TimerOnSa);
+				$("#TimerOffSa").html(resp.TimerOffSa);
+				$("#TimerOnSu").html(resp.TimerOnSu);
+				$("#TimerOffSu").html(resp.TimerOffSu);
 			},
 			complete: function () {
 				lastreqdone = 1;
