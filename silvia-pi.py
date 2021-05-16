@@ -238,7 +238,7 @@ def rest_server(dummy, state,timeState):
     def healthcheck():
         return 'OK'
 
-    @post('/TimerOnMo')
+    @post('/timerOnMo')
     def post_TimerOnMo():
         print("hit timer on ")
         print(request.forms.get('TimerOnMo'))
