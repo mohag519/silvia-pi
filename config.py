@@ -13,6 +13,23 @@ set_temp = 93.
 # Default alarm time
 snooze = '07:00'
 
+
+TimerOnMo = '06:00'
+TimerOffMo = '16:00'
+TimerOnTu = '06:00'
+TimerOffTu = '16:00'
+TimerOnWe = '06:00'
+TimerOffWe = '16:00'
+TimerOnTh = '06:00'
+TimerOffTh = '16:00'
+TimerOnFr = '06:00'
+TimerOffFr = '16:00'
+TimerOnSa = '06:00'
+TimerOffSa = '16:00'
+TimerOnSu = '00:00'
+TimerOffSu = '16:00'
+
+
 #temp lowpoint and high point
 low_temp_b = 85
 high_temp_b = 110

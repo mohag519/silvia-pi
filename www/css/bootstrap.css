@@ -248,6 +248,11 @@ th {
   .label {
     border: 1px solid #000;
   }
+
+  label, input {
+    display: inline-block;
+    vertical-align: baseline;
+}
   .table {
     border-collapse: collapse !important;
   }
@@ -2923,8 +2928,10 @@ select[multiple].input-lg {
   .form-inline .form-control {
     display: inline-block;
     width: auto;
-    vertical-align: middle;
+    vertical-align: center;
   }
+
+  
   .form-inline .form-control-static {
     display: inline-block;
   }
@@ -2937,6 +2944,8 @@ select[multiple].input-lg {
   .form-inline .input-group .form-control {
     width: auto;
   }
+
+
   .form-inline .input-group > .form-control {
     width: 100%;
   }
