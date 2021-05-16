@@ -138,7 +138,7 @@ def pid_loop(dummy, state):
                 state['dterm'] = round(pid.DTerm * conf.Dw, 2)
             state['iscold'] = iscold
 
-            print (time(), state)
+            print time(), state
 
             sleeptime = lasttime+conf.sample_time-time()
             if sleeptime < 0:
