@@ -270,7 +270,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOnWe'] = TimerOnWe
+        timeState['TimerOnWe'] = TimerOnWe
         return str(TimerOnWe)
 
     @post('/TimerOnTh')
@@ -281,7 +281,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOnTh'] = TimerOnTh
+        timeState['TimerOnTh'] = TimerOnTh
         return str(TimerOnTh)
 
     @post('/TimerOnFr')
@@ -292,7 +292,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOnFr'] = TimerOnFr
+        timeState['TimerOnFr'] = TimerOnFr
         return str(TimerOnFr)
 
     @post('/TimerOnSa')
@@ -303,7 +303,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOnSa'] = TimerOnSa
+        timeState['TimerOnSa'] = TimerOnSa
         return str(TimerOnSa)
 
     @post('/TimerOnSu')
@@ -314,7 +314,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOnSu'] = TimerOnSu
+        timeState['TimerOnSu'] = TimerOnSu
         return str(TimerOnSu)
 
     @post('/TimerOffMo')
@@ -325,7 +325,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOffMo'] = TimerOffMo
+        timeState['TimerOffMo'] = TimerOffMo
         return str(TimerOffMo)
 
     @post('/TimerOffTu')
@@ -336,7 +336,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOffTu'] = TimerOffTu
+        timeState['TimerOffTu'] = TimerOffTu
         return str(TimerOffTu)
 
     @post('/TimerOffWe')
@@ -347,7 +347,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOffWe'] = TimerOffWe
+        timeState['TimerOffWe'] = TimerOffWe
         return str(TimerOffWe)
 
     @post('/TimerOffTh')
@@ -358,7 +358,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOffTh'] = TimerOffTh
+        timeState['TimerOffTh'] = TimerOffTh
         return str(TimerOffTh)
 
     @post('/TimerOffFr')
@@ -369,7 +369,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOffFr'] = TimerOffFr
+        timeState['TimerOffFr'] = TimerOffFr
         return str(TimerOffFr)
 
     @post('/TimerOffSa')
@@ -380,7 +380,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOffSa'] = TimerOffSa
+        timeState['TimerOffSa'] = TimerOffSa
         return str(TimerOffSa)
 
     @post('/TimerOffSu')
@@ -391,7 +391,7 @@ def rest_server(dummy, state,timeState):
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOffSu'] = TimerOffSu
+        timeState['TimerOffSu'] = TimerOffSu
         return str(TimerOffSu)
 
 
