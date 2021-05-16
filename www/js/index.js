@@ -208,6 +208,37 @@ setInterval(function () {
 	}
 }, 100);
 
+setInterval(function () {
+	if (lastreqdone == 1) {
+		$.getJSON({
+			url: "/alltime",
+			timeout: 500,
+			success: function (resp) {
+				console.log(resp);
+				$("#TimerOnMo").html(resp.TimerOnMo);
+				$("#TimerOffMo").html(resp.TimerOffMo);
+				$("TimerOnTu").html(resp.TimerOnTu);
+				$("TimerOffTu").html(resp.TimerOffTu);
+				$("TimerOnWe").html(resp.TimerOnWe);
+				$("TimerOffWe").html(resp.TimerOffWe);
+				$("TimerOnTh").html(resp.TimerOnTh);
+				$("TimerOffTh").html(resp.TimerOffTh);
+				$("TimerOnFr").html(resp.TimerOnFr);
+				$("TimerOffFr").html(resp.TimerOffFr);
+				$("TimerOnSa").html(resp.TimerOnSa);
+				$("TimerOffSa").html(resp.TimerOffSa);
+				$("TimerOnSu").html(resp.TimerOnSu);
+				$("TimerOffSu").html(resp.TimerOffSu);
+			},
+			complete: function () {
+				lastreqdone = 1;
+			},
+		});
+
+		lastreqdone = 0;
+	}
+}, 100);
+
 function createTimeline() {
 	var chart = new SmoothieChart({
 		grid: { verticalSections: 3 },
