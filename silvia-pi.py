@@ -253,6 +253,8 @@ def rest_server(dummy, state,timeState):
 
     @post('/TimerOnTu')
     def post_TimerOnTu():
+        print("hit timer on tuesday",request.forms.get('TimerOnTu'))
+
         TimerOnTu = request.forms.get('TimerOnTu')
         try:
             datetime.strptime(TimerOnTu,'%H:%M')
