@@ -238,30 +238,26 @@ def rest_server(dummy, state,timeState):
     def healthcheck():
         return 'OK'
 
-    @post('/timerOnMo')
+    @post('/TimerOnMo')
     def post_TimerOnMo():
-        print("hit timer on ")
-        print(request.forms.get('TimerOnMo'))
         TimerOnMo = request.forms.get('TimerOnMo')
         try:
             datetime.strptime(TimerOnMo,'%H:%M')
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOnMo'] = TimerOnMo
+        timeState['TimerOnMo'] = TimerOnMo
         return str(TimerOnMo)
 
     @post('/TimerOnTu')
     def post_TimerOnTu():
-        print("hit timer on tuesday",request.forms.get('TimerOnTu'))
-
         TimerOnTu = request.forms.get('TimerOnTu')
         try:
             datetime.strptime(TimerOnTu,'%H:%M')
         except:
             pass
     #       abort(400,'Invalid time format.')
-        state['TimerOnTu'] = TimerOnTu
+        timeState['TimerOnTu'] = TimerOnTu
         return str(TimerOnTu)
 
     @post('/TimerOnWe')
