@@ -15,6 +15,7 @@ function refreshinputs() {
 		url: "/allstats",
 		timeout: 500,
 		success: function (resp) {
+			console.log(resp);
 			$("#inputSetTemp").val(resp.settemp);
 			$("#inputSnooze").val(resp.snooze);
 		},
