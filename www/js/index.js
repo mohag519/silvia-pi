@@ -19,6 +19,30 @@ function refreshinputs() {
 			$("#inputSnooze").val(resp.snooze);
 		},
 	});
+	$.getJSON({
+		url: "/alltime",
+		timeout: 500,
+		success: function (resp) {
+			console.log(resp);
+			$("#TimerOnMo").val(resp.TimerOnMo);
+			$("#TimerOffMo").val(resp.TimerOffMo);
+			$("#TimerOnTu").val(resp.TimerOnTu);
+			$("#TimerOffTu").val(resp.TimerOffTu);
+			$("#TimerOnWe").val(resp.TimerOnWe);
+			$("#TimerOffWe").val(resp.TimerOffWe);
+			$("#TimerOnTh").val(resp.TimerOnTh);
+			$("#TimerOffTh").val(resp.TimerOffTh);
+			$("#TimerOnFr").val(resp.TimerOnFr);
+			$("#TimerOffFr").val(resp.TimerOffFr);
+			$("#TimerOnSa").val(resp.TimerOnSa);
+			$("#TimerOffSa").val(resp.TimerOffSa);
+			$("#TimerOnSu").val(resp.TimerOnSu);
+			$("#TimerOffSu").val(resp.TimerOffSu);
+		},
+		complete: function () {
+			lastreqdone = 1;
+		},
+	});
 }
 
 function resettimer() {
@@ -174,61 +198,6 @@ setInterval(function () {
 				$("#dterm").html(resp.dterm.toFixed(2));
 				$("#pidval").html(resp.pidval.toFixed(2));
 				$("#avgpid").html(resp.avgpid.toFixed(2));
-			},
-			complete: function () {
-				lastreqdone = 1;
-			},
-		});
-		$.getJSON({
-			url: "/alltime",
-			timeout: 500,
-			success: function (resp) {
-				console.log(resp);
-				$("#TimerOnMo").html(resp.TimerOnMo);
-				$("#TimerOffMo").html(resp.TimerOffMo);
-				$("TimerOnTu").html(resp.TimerOnTu);
-				$("TimerOffTu").html(resp.TimerOffTu);
-				$("TimerOnWe").html(resp.TimerOnWe);
-				$("TimerOffWe").html(resp.TimerOffWe);
-				$("TimerOnTh").html(resp.TimerOnTh);
-				$("TimerOffTh").html(resp.TimerOffTh);
-				$("TimerOnFr").html(resp.TimerOnFr);
-				$("TimerOffFr").html(resp.TimerOffFr);
-				$("TimerOnSa").html(resp.TimerOnSa);
-				$("TimerOffSa").html(resp.TimerOffSa);
-				$("TimerOnSu").html(resp.TimerOnSu);
-				$("TimerOffSu").html(resp.TimerOffSu);
-			},
-			complete: function () {
-				lastreqdone = 1;
-			},
-		});
-
-		lastreqdone = 0;
-	}
-}, 100);
-
-setInterval(function () {
-	if (lastreqdone == 1) {
-		$.getJSON({
-			url: "/alltime",
-			timeout: 500,
-			success: function (resp) {
-				console.log(resp);
-				$("#TimerOnMo").html(resp.TimerOnMo);
-				$("#TimerOffMo").html(resp.TimerOffMo);
-				$("#TimerOnTu").html(resp.TimerOnTu);
-				$("#TimerOffTu").html(resp.TimerOffTu);
-				$("#TimerOnWe").html(resp.TimerOnWe);
-				$("#TimerOffWe").html(resp.TimerOffWe);
-				$("#TimerOnTh").html(resp.TimerOnTh);
-				$("#TimerOffTh").html(resp.TimerOffTh);
-				$("#TimerOnFr").html(resp.TimerOnFr);
-				$("#TimerOffFr").html(resp.TimerOffFr);
-				$("#TimerOnSa").html(resp.TimerOnSa);
-				$("#TimerOffSa").html(resp.TimerOffSa);
-				$("#TimerOnSu").html(resp.TimerOnSu);
-				$("#TimerOffSu").html(resp.TimerOffSu);
 			},
 			complete: function () {
 				lastreqdone = 1;
