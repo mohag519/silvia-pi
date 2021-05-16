@@ -39,9 +39,6 @@ function refreshinputs() {
 			$("#TimerOnSu").val(resp.TimerOnSu);
 			$("#TimerOffSu").val(resp.TimerOffSu);
 		},
-		complete: function () {
-			lastreqdone = 1;
-		},
 	});
 }
 
