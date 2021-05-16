@@ -111,7 +111,7 @@ $(document).ready(function () {
 	});
 
 	$("#inputTimerOnMo").change(function () {
-		console.log("changing timer on");
+		console.log("changing timer on", $("#inputTimerOnMo").val());
 		$.post("/TimerOnMo", { TimerOnMo: $("#inputTimerOnMo").val() });
 	});
 
