@@ -25,20 +25,20 @@ function refreshinputs() {
 		timeout: 500,
 		success: function (resp) {
 			console.log(resp);
-			$("#TimerOnMo").val(resp.TimerOnMo);
-			$("#TimerOffMo").val(resp.TimerOffMo);
-			$("#TimerOnTu").val(resp.TimerOnTu);
-			$("#TimerOffTu").val(resp.TimerOffTu);
-			$("#TimerOnWe").val(resp.TimerOnWe);
-			$("#TimerOffWe").val(resp.TimerOffWe);
-			$("#TimerOnTh").val(resp.TimerOnTh);
-			$("#TimerOffTh").val(resp.TimerOffTh);
-			$("#TimerOnFr").val(resp.TimerOnFr);
-			$("#TimerOffFr").val(resp.TimerOffFr);
-			$("#TimerOnSa").val(resp.TimerOnSa);
-			$("#TimerOffSa").val(resp.TimerOffSa);
-			$("#TimerOnSu").val(resp.TimerOnSu);
-			$("#TimerOffSu").val(resp.TimerOffSu);
+			$("#inputTimerOnMo").val(resp.TimerOnMo);
+			$("#inputTimerOffMo").val(resp.TimerOffMo);
+			$("#inputTimerOnTu").val(resp.TimerOnTu);
+			$("#inputTimerOffTu").val(resp.TimerOffTu);
+			$("#inputTimerOnWe").val(resp.TimerOnWe);
+			$("#inputTimerOffWe").val(resp.TimerOffWe);
+			$("#inputTimerOnTh").val(resp.TimerOnTh);
+			$("#inputTimerOffTh").val(resp.TimerOffTh);
+			$("#inputTimerOnFr").val(resp.TimerOnFr);
+			$("#inputTimerOffFr").val(resp.TimerOffFr);
+			$("#inputTimerOnSa").val(resp.TimerOnSa);
+			$("#inputTimerOffSa").val(resp.TimerOffSa);
+			$("#inputTimerOnSu").val(resp.TimerOnSu);
+			$("#inputTimerOffSu").val(resp.TimerOffSu);
 		},
 	});
 }
