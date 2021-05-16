@@ -11,14 +11,14 @@ var lastreqdone = 1;
 var timeout;
 
 function refreshinputs() {
-	$.getJSON({
-		url: "/allstats",
-		timeout: 500,
-		success: function (resp) {
-			$("#inputSetTemp").val(resp.settemp);
-			$("#inputSnooze").val(resp.snooze);
-		},
-	});
+	// $.getJSON({
+	// 	url: "/allstats",
+	// 	timeout: 500,
+	// 	success: function (resp) {
+	// 		$("#inputSetTemp").val(resp.settemp);
+	// 		$("#inputSnooze").val(resp.snooze);
+	// 	},
+	// });
 	$.getJSON({
 		url: "/alltime",
 		timeout: 500,
