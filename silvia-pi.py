@@ -153,7 +153,7 @@ def pid_loop(dummy, state):
         pid.clear
 
 
-def rest_server(dummy, state):
+def rest_server(dummy, state,timeState):
     from bottle import route, run, get, post, request, static_file, abort
     from subprocess import call
     from datetime import datetime
@@ -194,7 +194,6 @@ def rest_server(dummy, state):
             print("line189 wrong number set temp")
             # abort(400,'Invalid number for set temp.')
 
-    # @post('/setMonday')
 
     @get('/snooze')
     def get_snooze():
@@ -220,6 +219,10 @@ def rest_server(dummy, state):
     @get('/allstats')
     def allstats():
         return dict(state)
+
+    @get('/alltime')
+    def alltime():
+        return dict(timeState)
 
     @route('/restart')
     def restart():
@@ -408,23 +411,23 @@ if __name__ == '__main__':
     pidstate['settemp'] = conf.set_temp
     pidstate['avgpid'] = 0.
 
-    state = manager.dict()    
-    state['TimerOnMo'] = conf.TimerOnMo
-    state['TimerOffMo'] = conf.TimerOffMo
-    state['TimerOnTu'] = conf.TimerOnTu
-    state['TimerOffTu'] = conf.TimerOffTu
-    state['TimerOnWe'] = conf.TimerOnWe
-    state['TimerOffWe'] = conf.TimerOffWe
-    state['TimerOnTh'] = conf.TimerOnTh
-    state['TimerOffTh'] = conf.TimerOffTh
-    state['TimerOnFr'] = conf.TimerOnFr
-    state['TimerOffFr'] = conf.TimerOffFr
-    state['TimerOnSa'] = conf.TimerOnSa
-    state['TimerOffSa'] = conf.TimerOffSa
-    state['TimerOnSu'] = conf.TimerOnSu
-    state['TimerOffSu'] = conf.TimerOffSu
+    timeState = manager.dict()    
+    timeState['TimerOnMo'] = conf.TimerOnMo
+    timeState['TimerOffMo'] = conf.TimerOffMo
+    timeState['TimerOnTu'] = conf.TimerOnTu
+    timeState['TimerOffTu'] = conf.TimerOffTu
+    timeState['TimerOnWe'] = conf.TimerOnWe
+    timeState['TimerOffWe'] = conf.TimerOffWe
+    timeState['TimerOnTh'] = conf.TimerOnTh
+    timeState['TimerOffTh'] = conf.TimerOffTh
+    timeState['TimerOnFr'] = conf.TimerOnFr
+    timeState['TimerOffFr'] = conf.TimerOffFr
+    timeState['TimerOnSa'] = conf.TimerOnSa
+    timeState['TimerOffSa'] = conf.TimerOffSa
+    timeState['TimerOnSu'] = conf.TimerOnSu
+    timeState['TimerOffSu'] = conf.TimerOffSu
 
-    pidstate['awake'] = timer.timer(state)
+    pidstate['awake'] = timer.timer(timeState)
 
     p = Process(target=pid_loop, args=(1, pidstate))
     p.daemon = True
@@ -434,7 +437,7 @@ if __name__ == '__main__':
     h.daemon = True
     h.start()
 
-    r = Process(target=rest_server, args=(1, pidstate))
+    r = Process(target=rest_server, args=(1, pidstate,timeState))
     r.daemon = True
     r.start()
 

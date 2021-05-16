@@ -84,10 +84,6 @@ $(document).ready(function () {
 		$("#btnSnoozeC").hide();
 	});
 
-	$("#inputSetTemp").change(function () {
-		$.post("/settemp", { settemp: $("#inputSetTemp").val() });
-	});
-
 	$("#inputSetSteamTemp").change(function () {
 		$.post("/setsteamtemp", { setsteamtemp: $("#inputSetSteamTemp").val() });
 	});
@@ -171,6 +167,7 @@ setInterval(function () {
 				dterm.append(new Date().getTime(), resp.dterm);
 				pidval.append(new Date().getTime(), resp.pidval);
 				avgpid.append(new Date().getTime(), resp.avgpid);
+
 				$("#curtemp").html(resp.tempc.toFixed(2));
 				$("#pterm").html(resp.pterm.toFixed(2));
 				$("#iterm").html(resp.iterm.toFixed(2));
@@ -182,6 +179,27 @@ setInterval(function () {
 				lastreqdone = 1;
 			},
 		});
+		$.getJSON({
+			url: "/alltime",
+			timeout: 500,
+			success: function (resp) {
+				$("#TimerOnMo").html(resp.TimerOnMo);
+				$("TimerOffMo").html(resp.TimerOffMo);
+				$("TimerOnTu").html(resp.TimerOnTu);
+				$("TimerOffTu").html(resp.TimerOffTu);
+				$("TimerOnWe").html(resp.TimerOnWe);
+				$("TimerOffWe").html(resp.TimerOffWe);
+				$("TimerOnTh").html(resp.TimerOnTh);
+				$("TimerOffTh").html(resp.TimerOffTh);
+				$("TimerOnFr").html(resp.TimerOnFr);
+				$("TimerOffFr").html(resp.TimerOffFr);
+				$("TimerOnSa").html(resp.TimerOnSa);
+				$("TimerOffSa").html(resp.TimerOffSa);
+				$("TimerOnSu").html(resp.TimerOnSu);
+				$("TimerOffSu").html(resp.TimerOffSu);
+			},
+		});
+
 		lastreqdone = 0;
 	}
 }, 100);
