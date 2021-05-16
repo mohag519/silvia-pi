@@ -14,15 +14,15 @@ def he_control_loop(dummy, state):
 
     try:
         while True:
-            if state['snoozeon'] == True:
-                now = datetime.now()
-                dt = datetime.strptime(state['snooze'], '%H:%M')
-                if dt.hour == now.hour and dt.minute == now.minute:
-                    state['snoozeon'] = False
+            # if state['snoozeon'] == True:
+            #     now = datetime.now()
+            #     dt = datetime.strptime(state['snooze'], '%H:%M')
+            #     if dt.hour == now.hour and dt.minute == now.minute:
+            #         state['snoozeon'] = False
 
             avgpid = state['avgpid']
 
-            if state['snoozeon']:
+            if not state['awake']:
                 state['heating'] = False
                 GPIO.output(conf.he_pin, 0)
                 sleep(1)
@@ -138,7 +138,7 @@ def pid_loop(dummy, state):
                 state['dterm'] = round(pid.DTerm * conf.Dw, 2)
             state['iscold'] = iscold
 
-            print time(), state
+            print (time(), state)
 
             sleeptime = lasttime+conf.sample_time-time()
             if sleeptime < 0:
@@ -423,7 +423,7 @@ if __name__ == '__main__':
     state['TimerOffSu'] = conf.TimerOffSu
 
     pidstate['awake'] = timer.timer(state)
-    
+
     p = Process(target=pid_loop, args=(1, pidstate))
     p.daemon = True
     p.start()
