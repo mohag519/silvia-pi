@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-def he_control_loop(dummy, state):
+def he_control_loop(dummy, state,timeState):
     from time import sleep
     from datetime import datetime, timedelta
     import RPi.GPIO as GPIO
@@ -14,6 +14,8 @@ def he_control_loop(dummy, state):
 
     try:
         while True:
+            pidstate['awake'] = timer.timer(timeState)
+
             # if state['snoozeon'] == True:
             #     now = datetime.now()
             #     dt = datetime.strptime(state['snooze'], '%H:%M')
@@ -433,7 +435,7 @@ if __name__ == '__main__':
     p.daemon = True
     p.start()
 
-    h = Process(target=he_control_loop, args=(1, pidstate))
+    h = Process(target=he_control_loop, args=(1, pidstate,timeState))
     h.daemon = True
     h.start()
 
