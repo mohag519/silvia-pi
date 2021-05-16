@@ -27,7 +27,7 @@ TimerOffFr = '16:00'
 TimerOnSa = '06:00'
 TimerOffSa = '16:00'
 TimerOnSu = '00:00'
-TimerOffSu = '16:00'
+TimerOffSu = '23:00'
 
 
 #temp lowpoint and high point
