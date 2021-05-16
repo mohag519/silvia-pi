@@ -56,6 +56,7 @@ def pid_loop(dummy, state):
     import Adafruit_MAX31855.MAX31855 as MAX31855
     import PID as PID
     import config as conf
+    from datetime import datetime
 
     def c_to_f(c):
         return c * 9.0 / 5.0 + 32.0
@@ -138,7 +139,7 @@ def pid_loop(dummy, state):
                 state['dterm'] = round(pid.DTerm * conf.Dw, 2)
             state['iscold'] = iscold
 
-            print (time())
+            print (datetime.now())
             print(state)
 
             sleeptime = lasttime+conf.sample_time-time()
