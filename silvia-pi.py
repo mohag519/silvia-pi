@@ -51,7 +51,6 @@ def he_control_loop(dummy, state):
 def pid_loop(dummy, state):
     import sys
     from time import sleep, time
-    import datetime
     from math import isnan
     import Adafruit_GPIO.SPI as SPI
     import Adafruit_MAX31855.MAX31855 as MAX31855
@@ -139,7 +138,7 @@ def pid_loop(dummy, state):
                 state['dterm'] = round(pid.DTerm * conf.Dw, 2)
             state['iscold'] = iscold
 
-            print (datetime.now())
+            print (time())
             print(state)
 
             sleeptime = lasttime+conf.sample_time-time()
