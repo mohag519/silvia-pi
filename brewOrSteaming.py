@@ -11,7 +11,7 @@ output : steam, circuitbreaker, timeSinceLastSteaming
 def steaming(timeSinceLastSteaming):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(conf.steam_pin,GPIO.IN)
-    steam_pin = GPIO.input(conf.steam_pin)
+    steam_pin = GPIO.input(conf.steam_pin,0)
 
     print("steam pin is ",steam_pin)
     if steam_pin == True:
