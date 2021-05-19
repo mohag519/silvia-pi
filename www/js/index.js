@@ -18,6 +18,7 @@ function refreshinputs() {
 			console.log(resp);
 			$("#inputSetTemp").val(resp.settemp);
 			$("#inputSnooze").val(resp.snooze);
+			$("#inputSetSteamTemp").val(resp.steamtemp);
 		},
 	});
 	$.getJSON({
@@ -94,6 +95,10 @@ $(document).ready(function () {
 		$.post("/settemp", { settemp: $("#inputSetTemp").val() });
 	});
 
+	$("#inputSetSteamTemp").change(function () {
+		$.post("/setsteamtemp", { steamtemp: $("#inputSetSteamTemp").val() });
+	});
+
 	$("#btnSnooze").click(function () {
 		$.post("/snooze", { snooze: $("#inputSnooze").val() });
 		$("#btnSnooze").hide();
@@ -104,10 +109,6 @@ $(document).ready(function () {
 		$.post("/resetsnooze");
 		$("#btnSnooze").show();
 		$("#btnSnoozeC").hide();
-	});
-
-	$("#inputSetSteamTemp").change(function () {
-		$.post("/setsteamtemp", { setsteamtemp: $("#inputSetSteamTemp").val() });
 	});
 
 	$("#inputTimerOnMo").change(function () {

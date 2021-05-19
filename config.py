@@ -13,6 +13,7 @@ he_pin = 26
 brew_pin = 17
 steam_pin = 22
 
+
 #overriding the time config when wanting to heat up not during normal hours
 overRide = 16
 
@@ -44,6 +45,9 @@ TimerOffSu = '23:00'
 #temp lowpoint and high point
 low_temp_b = 85
 high_temp_b = 110
+
+low_temp_s = 130
+high_temp_s = 160
 
 # Main loop sample rate in seconds
 sample_time = 0.1

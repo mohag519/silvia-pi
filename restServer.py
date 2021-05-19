@@ -42,6 +42,20 @@ def rest_server(dummy, state,timeState):
             print("line189 wrong number set temp")
             # abort(400,'Invalid number for set temp.')
 
+    @post('/setsteamtemp')
+    def post_setsteamtemp():
+        try:
+            steamtemp = float(request.forms.get('steamtemp'))
+            if steamtemp >= conf.low_temp_s and steamtemp <= conf.high_temp_s:
+                state['steamtemp'] = steamtemp
+                return str(steamtemp)
+            else:
+                print("wrong temp 53")
+                # abort(400,'Set temp out of range 200-260.')
+        except:
+            print("line56 wrong number set temp")
+            # abort(400,'Invalid number for set temp.')
+
 
     @get('/snooze')
     def get_snooze():
