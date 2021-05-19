@@ -11,7 +11,7 @@ spi_dev = 0
 he_pin = 26
 
 brew_pin = 17
-steam_pin = 22
+steam_pin = 23
 
 
 #overriding the time config when wanting to heat up not during normal hours
@@ -22,7 +22,7 @@ set_temp = 93.
 set_steam_temp = 151.
 # Default alarm time
 snooze = '07:00'
-    
+
 #circuit breaker time in minutes convert to seconds
 circuitBreakerTime = 20 * 60
 
