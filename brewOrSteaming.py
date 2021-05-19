@@ -2,14 +2,15 @@
 
 from time import sleep, time
 import config as conf
+import RPi.GPIO as GPIO
 
 """
 Input:timeSinceLastSteal
 output : steam, circuitbreaker, timeSinceLastSteaming
 """
 def steaming(timeSinceLastSteaming):
-    print("steam pin is ",conf.steam_pin)
-    if conf.steam_pin == True:
+    print("steam pin is ",GPIO.input(conf.steam_pin))
+    if GPIO.input(conf.steam_pin) == True:
         print("steaming")
         #TODO add protection timer to turn off steam even after a while for protection,TURNOFF COMPLETELY
         #resetted steam pin since new press
