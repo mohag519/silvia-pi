@@ -22,6 +22,9 @@ def timer(state):
     t_onSu = datetime.strptime(state['TimerOnSu'],'%H:%M')
     t_offSu = datetime.strptime(state['TimerOffSu'],'%H:%M')
 
+    if state['overRide'] == True:
+        return True
+        
     if t_onMo <= now and t_offMo >= now and weekday == 0:
         awake = True
     elif t_onTu <= now and t_offTu >= now and weekday == 1:

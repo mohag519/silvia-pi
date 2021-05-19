@@ -16,6 +16,7 @@ def he_control_loop(dummy, state,timeState):
         while True:
             pidstate['awake'] = timer.timer(timeState)
 
+
             # if state['snoozeon'] == True:
             #     now = datetime.now()
             #     dt = datetime.strptime(state['snooze'], '%H:%M')
@@ -24,7 +25,7 @@ def he_control_loop(dummy, state,timeState):
 
             avgpid = state['avgpid']
 
-            if not state['awake']:
+            if not state['awake'] or state['circuitBreaker']:
                 state['heating'] = False
                 GPIO.output(conf.he_pin, 0)
                 sleep(1)
@@ -59,6 +60,8 @@ def pid_loop(dummy, state):
     import PID as PID
     import config as conf
     from datetime import datetime
+    from brewOrSteaming import steaming
+
 
     def c_to_f(c):
         return c * 9.0 / 5.0 + 32.0
@@ -83,13 +86,18 @@ def pid_loop(dummy, state):
     iswarm = False
     lastcold = 0
     lastwarm = 0
+    circuitBreaker = False
+    timeSinceLastSteam = None
 
     try:
         while True:  # Loops 10x/second
             tempc = sensor.readTempC()
+            steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam)
+            state['circuitBreaker'] = circuitBreaker
             if isnan(tempc):
                 nanct += 1
                 if nanct > 100000:
+                    print("ERROR IN READING TEMPERATURE LINE 98")
                     sys.exit
                 continue
             else:
@@ -99,27 +107,56 @@ def pid_loop(dummy, state):
             temphist[i % 5] = tempc
             avgtemp = sum(temphist)/len(temphist)
 
-            if avgtemp < 30:
-                lastcold = i
+            #circuitbreaker is on
+            if circuitBreaker:
+                continue
 
-            if avgtemp > 90:
-                lastwarm = i
+            if steam :
+                if avgtemp < 90:
+                    lastcold = i
 
-            if iscold and (i-lastcold)*conf.sample_time > 60*15:
-                pid = PID.PID(conf.Pw, conf.Iw, conf.Dw)
-                pid.SetPoint = state['settemp']
-                pid.setSampleTime(conf.sample_time*5)
-                iscold = False
+                if avgtemp > 130:
+                    lastwarm = i
 
-            if iswarm and (i-lastwarm)*conf.sample_time > 60*15:
-                pid = PID.PID(conf.Pc, conf.Ic, conf.Dc)
-                pid.SetPoint = state['settemp']
-                pid.setSampleTime(conf.sample_time*5)
-                iscold = True
+                if iscold and (i-lastcold)*conf.sample_time > 60*15:
+                    pid = PID.PID(conf.Pw, conf.Iw, conf.Dw)
+                    pid.SetPoint = state['steamtemp']
+                    pid.setSampleTime(conf.sample_time*5)
+                    iscold = False
 
-            if state['settemp'] != lastsettemp:
-                pid.SetPoint = state['settemp']
-                lastsettemp = state['settemp']
+                if iswarm and (i-lastwarm)*conf.sample_time > 60*15:
+                    pid = PID.PID(conf.Pc, conf.Ic, conf.Dc)
+                    pid.SetPoint = state['steamtemp']
+                    pid.setSampleTime(conf.sample_time*5)
+                    iscold = True
+
+                if state['steamtemp'] != lastsettemp:
+                    pid.SetPoint = state['steamtemp']
+                    lastsettemp = state['steamtemp']
+
+            else:
+                if avgtemp < 30:
+                    lastcold = i
+
+                if avgtemp > 90:
+                    lastwarm = i
+
+                if iscold and (i-lastcold)*conf.sample_time > 60*15:
+                    pid = PID.PID(conf.Pw, conf.Iw, conf.Dw)
+                    pid.SetPoint = state['settemp']
+                    pid.setSampleTime(conf.sample_time*5)
+                    iscold = False
+
+                if iswarm and (i-lastwarm)*conf.sample_time > 60*15:
+                    pid = PID.PID(conf.Pc, conf.Ic, conf.Dc)
+                    pid.SetPoint = state['settemp']
+                    pid.setSampleTime(conf.sample_time*5)
+                    iscold = True
+
+                if state['settemp'] != lastsettemp:
+                    pid.SetPoint = state['settemp']
+                    lastsettemp = state['settemp']
+
 
             if i % 10 == 0:
                 pid.update(avgtemp)
@@ -143,6 +180,7 @@ def pid_loop(dummy, state):
 
             print (datetime.now())
             print(state)
+            print("time since last steam", timeSinceLastSteam)
 
             sleeptime = lasttime+conf.sample_time-time()
             if sleeptime < 0:
@@ -155,248 +193,6 @@ def pid_loop(dummy, state):
         pid.clear
 
 
-def rest_server(dummy, state,timeState):
-    from bottle import route, run, get, post, request, static_file, abort
-    from subprocess import call
-    from datetime import datetime
-    import config as conf
-    import os
-
-    # '/root/silvia-pi'#os.path.dirname(__file__)
-    basedir = os.path.dirname(os.path.abspath(__file__))
-    wwwdir = basedir+'/www/'
-
-    @route('/')
-    def docroot():
-        return static_file('index.html', wwwdir)
-
-    @route('/<filepath:path>')
-    def servfile(filepath):
-        return static_file(filepath, wwwdir)
-
-    @route('/curtemp')
-    def curtemp():
-        return str(state['avgtemp'])
-
-    @get('/settemp')
-    def settemp():
-        return str(state['settemp'])
-
-    @post('/settemp')
-    def post_settemp():
-        try:
-            settemp = float(request.forms.get('settemp'))
-            if settemp >= conf.low_temp_b and settemp <= conf.high_temp_b:
-                state['settemp'] = settemp
-                return str(settemp)
-            else:
-                print("wrong temp 186")
-                # abort(400,'Set temp out of range 200-260.')
-        except:
-            print("line189 wrong number set temp")
-            # abort(400,'Invalid number for set temp.')
-
-
-    @get('/snooze')
-    def get_snooze():
-        return str(state['snooze'])
-
-    @post('/snooze')
-    def post_snooze():
-        snooze = request.forms.get('snooze')
-        try:
-            datetime.strptime(snooze, '%H:%M')
-        except:
-            print("line202,wrong time format")
-            # abort(400,'Invalid time format.')
-        state['snoozeon'] = True
-        state['snooze'] = snooze
-        return str(snooze)
-
-    @post('/resetsnooze')
-    def reset_snooze():
-        state['snoozeon'] = False
-        return True
-
-    @get('/allstats')
-    def allstats():
-        return dict(state)
-
-    @get('/alltime')
-    def alltime():
-        return dict(timeState)
-
-    @route('/restart')
-    def restart():
-        call(["reboot"])
-        return ''
-
-    @route('/shutdown')
-    def shutdown():
-        call(["shutdown", "-h", "now"])
-        return ''
-
-    @get('/healthcheck')
-    def healthcheck():
-        return 'OK'
-
-    @post('/TimerOnMo')
-    def post_TimerOnMo():
-        TimerOnMo = request.forms.get('TimerOnMo')
-        try:
-            datetime.strptime(TimerOnMo,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnMo'] = TimerOnMo
-        return str(TimerOnMo)
-
-    @post('/TimerOnTu')
-    def post_TimerOnTu():
-        TimerOnTu = request.forms.get('TimerOnTu')
-        try:
-            datetime.strptime(TimerOnTu,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnTu'] = TimerOnTu
-        return str(TimerOnTu)
-
-    @post('/TimerOnWe')
-    def post_TimerOnWe():
-        TimerOnWe = request.forms.get('TimerOnWe')
-        try:
-            datetime.strptime(TimerOnWe,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnWe'] = TimerOnWe
-        return str(TimerOnWe)
-
-    @post('/TimerOnTh')
-    def post_TimerOnTh():
-        TimerOnTh = request.forms.get('TimerOnTh')
-        try:
-            datetime.strptime(TimerOnTh,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnTh'] = TimerOnTh
-        return str(TimerOnTh)
-
-    @post('/TimerOnFr')
-    def post_TimerOnFr():
-        TimerOnFr = request.forms.get('TimerOnFr')
-        try:
-            datetime.strptime(TimerOnFr,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnFr'] = TimerOnFr
-        return str(TimerOnFr)
-
-    @post('/TimerOnSa')
-    def post_TimerOnSa():
-        TimerOnSa = request.forms.get('TimerOnSa')
-        try:
-            datetime.strptime(TimerOnSa,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnSa'] = TimerOnSa
-        return str(TimerOnSa)
-
-    @post('/TimerOnSu')
-    def post_TimerOnSu():
-        TimerOnSu = request.forms.get('TimerOnSu')
-        try:
-            datetime.strptime(TimerOnSu,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnSu'] = TimerOnSu
-        return str(TimerOnSu)
-
-    @post('/TimerOffMo')
-    def post_TimerOffMo():
-        TimerOffMo = request.forms.get('TimerOffMo')
-        try:
-            datetime.strptime(TimerOffMo,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffMo'] = TimerOffMo
-        return str(TimerOffMo)
-
-    @post('/TimerOffTu')
-    def post_TimerOffTu():
-        TimerOffTu = request.forms.get('TimerOffTu')
-        try:
-            datetime.strptime(TimerOffTu,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffTu'] = TimerOffTu
-        return str(TimerOffTu)
-
-    @post('/TimerOffWe')
-    def post_TimerOffWe():
-        TimerOffWe = request.forms.get('TimerOffWe')
-        try:
-            datetime.strptime(TimerOffWe,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffWe'] = TimerOffWe
-        return str(TimerOffWe)
-
-    @post('/TimerOffTh')
-    def post_TimerOffTh():
-        TimerOffTh = request.forms.get('TimerOffTh')
-        try:
-            datetime.strptime(TimerOffTh,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffTh'] = TimerOffTh
-        return str(TimerOffTh)
-
-    @post('/TimerOffFr')
-    def post_TimerOffFr():
-        TimerOffFr = request.forms.get('TimerOffFr')
-        try:
-            datetime.strptime(TimerOffFr,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffFr'] = TimerOffFr
-        return str(TimerOffFr)
-
-    @post('/TimerOffSa')
-    def post_TimerOffSa():
-        TimerOffSa = request.forms.get('TimerOffSa')
-        try:
-            datetime.strptime(TimerOffSa,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffSa'] = TimerOffSa
-        return str(TimerOffSa)
-
-    @post('/TimerOffSu')
-    def post_TimerOffSu():
-        TimerOffSu = request.forms.get('TimerOffSu')
-        try:
-            datetime.strptime(TimerOffSu,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffSu'] = TimerOffSu
-        return str(TimerOffSu)
-
-
-    run(host='0.0.0.0', port=conf.port, server='auto')
-
 
 if __name__ == '__main__':
     from multiprocessing import Process, Manager
@@ -404,6 +200,7 @@ if __name__ == '__main__':
     from urllib2 import urlopen
     import config as conf
     import timer
+    from restServer import rest_server
 
     manager = Manager()
     pidstate = manager.dict()
@@ -411,6 +208,8 @@ if __name__ == '__main__':
     pidstate['snoozeon'] = False
     pidstate['i'] = 0
     pidstate['settemp'] = conf.set_temp
+    pidstate['steamtemp'] = conf.set_steam_temp
+    pidstate['circuitBreaker'] = None
     pidstate['avgpid'] = 0.
 
     timeState = manager.dict()    
@@ -428,6 +227,8 @@ if __name__ == '__main__':
     timeState['TimerOffSa'] = conf.TimerOffSa
     timeState['TimerOnSu'] = conf.TimerOnSu
     timeState['TimerOffSu'] = conf.TimerOffSu
+
+    timeState['overRide'] = conf.overRide
 
     pidstate['awake'] = timer.timer(timeState)
 

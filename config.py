@@ -1,18 +1,29 @@
 #!/usr/bin/python
 
+#PIN 0-8 3v3 pull-up default, 9-27 pull-down default
+
 # Raspberry Pi SPI Port and Device
 spi_port = 0
 spi_dev = 0
 
+
 # Pin # for relay connected to heating element
 he_pin = 26
 
+brew_pin = 17
+steam_pin = 22
+
+#overriding the time config when wanting to heat up not during normal hours
+overRide = 16
+
 # Default goal temperature
 set_temp = 93.
-
+set_steam_temp = 151.
 # Default alarm time
 snooze = '07:00'
 
+#circuit breaker time in minutes convert to seconds
+circuitBreakerTime = 20 * 60
 
 TimerOnMo = '06:00'
 TimerOffMo = '23:00'
