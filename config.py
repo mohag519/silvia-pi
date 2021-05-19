@@ -22,7 +22,7 @@ set_temp = 93.
 set_steam_temp = 151.
 # Default alarm time
 snooze = '07:00'
-
+    
 #circuit breaker time in minutes convert to seconds
 circuitBreakerTime = 20 * 60
 
