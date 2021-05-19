@@ -62,6 +62,7 @@ def pid_loop(dummy, state):
     import config as conf
     from datetime import datetime
     from brewOrSteaming import steaming
+    import RPi.GPIO as GPIO
 
 
     def c_to_f(c):
@@ -191,6 +192,7 @@ def pid_loop(dummy, state):
             lasttime = time()
 
     finally:
+        GPIO.cleanup()
         pid.clear
 
 
