@@ -14,7 +14,6 @@ def steaming(timeSinceLastSteaming):
     steam_pin = GPIO.input(conf.steam_pin)
 
     print("steam pin is ",steam_pin)
-)
     if steam_pin == True:
         print("steaming")
         #TODO add protection timer to turn off steam even after a while for protection,TURNOFF COMPLETELY
