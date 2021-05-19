@@ -9,7 +9,6 @@ def he_control_loop(dummy, state,timeState):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(conf.he_pin, GPIO.OUT)
     GPIO.output(conf.he_pin, 0)
-    GPIO.input(conf.steam_pin,0)
     heating = False
 
     try:
