@@ -10,7 +10,7 @@ def he_control_loop(dummy, state,timeState):
     GPIO.setup(conf.he_pin, GPIO.OUT)
     GPIO.setup(conf.steam_pin,GPIO.IN)
     GPIO.output(conf.he_pin, 0)
-    steam_pin = GPIO.input(conf.steam_pin)
+    GPIO.input(conf.steam_pin)
     heating = False
 
     try:
@@ -93,7 +93,7 @@ def pid_loop(dummy, state):
     try:
         while True:  # Loops 10x/second
             tempc = sensor.readTempC()
-            steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam,steam_pin)
+            steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam)
             state['circuitBreaker'] = circuitBreaker
             if isnan(tempc):
                 nanct += 1
