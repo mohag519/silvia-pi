@@ -8,6 +8,7 @@ Input:timeSinceLastSteal
 output : steam, circuitbreaker, timeSinceLastSteaming
 """
 def steaming(timeSinceLastSteaming):
+    print("line11")
     if conf.steam_pin == True:
         print("steaming")
         #TODO add protection timer to turn off steam even after a while for protection,TURNOFF COMPLETELY
