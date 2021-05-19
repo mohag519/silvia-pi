@@ -11,11 +11,11 @@ output : steam, circuitbreaker, timeSinceLastSteaming
 def steaming(timeSinceLastSteaming):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(conf.steam_pin,GPIO.IN)
+    steam_pin = GPIO.input(conf.steam_pin)
 
-
-    print("steam pin is ",GPIO.input(conf.steam_pin)
+    print("steam pin is ",steam_pin)
 )
-    if     GPIO.input(conf.steam_pin) == True:
+    if steam_pin == True:
         print("steaming")
         #TODO add protection timer to turn off steam even after a while for protection,TURNOFF COMPLETELY
         #resetted steam pin since new press
