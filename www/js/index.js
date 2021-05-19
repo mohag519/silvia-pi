@@ -182,6 +182,8 @@ setInterval(function () {
 					$("#btnSnooze").show();
 					$("#btnSnoozeC").hide();
 				}
+
+				// TODO, need to CHANGE this to also get resp.steampin to ensure we are showing the steaming phase
 				curtemp.append(new Date().getTime(), resp.tempc);
 				settemp.append(new Date().getTime(), resp.settemp);
 				settempm.append(new Date().getTime(), resp.settemp - 4);
