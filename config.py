@@ -11,7 +11,7 @@ spi_dev = 0
 he_pin = 26
 
 brew_pin = 17
-steam_pin = 23
+steam_pin = 22
 
 
 #overriding the time config when wanting to heat up not during normal hours
