@@ -96,6 +96,7 @@ def pid_loop(dummy, state):
             tempc = sensor.readTempC()
             steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam)
             state['circuitBreaker'] = circuitBreaker
+            state['steam'] = steam
             if isnan(tempc):
                 nanct += 1
                 if nanct > 100000:
@@ -113,7 +114,7 @@ def pid_loop(dummy, state):
             if circuitBreaker:
                 continue
 
-            if steam :
+            if state['steam'] :
                 if avgtemp < 90:
                     lastcold = i
 
@@ -213,6 +214,7 @@ if __name__ == '__main__':
     pidstate['settemp'] = conf.set_temp
     pidstate['steamtemp'] = conf.set_steam_temp
     pidstate['circuitBreaker'] = None
+    pidstate['steam'] = False
     pidstate['avgpid'] = 0.
 
     timeState = manager.dict()    

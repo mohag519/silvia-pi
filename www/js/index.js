@@ -185,9 +185,15 @@ setInterval(function () {
 
 				// TODO, need to CHANGE this to also get resp.steampin to ensure we are showing the steaming phase
 				curtemp.append(new Date().getTime(), resp.tempc);
-				settemp.append(new Date().getTime(), resp.settemp);
-				settempm.append(new Date().getTime(), resp.settemp - 4);
-				settempp.append(new Date().getTime(), resp.settemp + 4);
+				if (resp.steam) {
+					settemp.append(new Date().getTime(), resp.steamtemp);
+					settempm.append(new Date().getTime(), resp.steamtemp - 4);
+					settempp.append(new Date().getTime(), resp.steamtemp + 4);
+				} else {
+					settemp.append(new Date().getTime(), resp.settemp);
+					settempm.append(new Date().getTime(), resp.settemp - 4);
+					settempp.append(new Date().getTime(), resp.settemp + 4);
+				}
 				pterm.append(new Date().getTime(), resp.pterm);
 				iterm.append(new Date().getTime(), resp.iterm);
 				dterm.append(new Date().getTime(), resp.dterm);
