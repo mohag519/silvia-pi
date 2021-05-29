@@ -109,7 +109,7 @@ def pid_loop(dummy, state):
             # tempf = c_to_f(tempc)
             temphist[i % 5] = tempc
             avgtemp = sum(temphist)/len(temphist)
-
+            
             #circuitbreaker is on
             if circuitBreaker:
                 continue
@@ -137,6 +137,9 @@ def pid_loop(dummy, state):
                 if state['steamtemp'] != lastsettemp:
                     pid.SetPoint = state['steamtemp']
                     lastsettemp = state['steamtemp']
+                
+                print("pid.setpoint",pid.SetPoint)
+                print("avg temp",avgtemp)
 
             else:
                 print("line 142 brew hit")
@@ -168,6 +171,10 @@ def pid_loop(dummy, state):
                 pidout = pid.output
                 pidhist[i/10 % 10] = pidout
                 avgpid = sum(pidhist)/len(pidhist)
+
+                print("pidout",pidout)
+                print("pidHist",pidhist)
+                print("avgpid",avgpid)
 
             state['i'] = i
             state['tempc'] = round(tempc, 2)
