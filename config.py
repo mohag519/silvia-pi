@@ -53,11 +53,11 @@ high_temp_s = 160
 sample_time = 0.1
 
 # PID Proportional, Integral, and Derivative values
-Pc = 3.4
+Pc = 4.2#3.4
 Ic = 1.3#0.3
 Dc = 40.0
 
-Pw = 2.9
+Pw = 3.4#2.9
 Iw = 1.3#0.3
 Dw = 40.0
 
