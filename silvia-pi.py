@@ -115,6 +115,7 @@ def pid_loop(dummy, state):
                 continue
 
             if state['steam'] :
+                print("line 118 steam on hit")
                 if avgtemp < 90:
                     lastcold = i
 
@@ -138,6 +139,7 @@ def pid_loop(dummy, state):
                     lastsettemp = state['steamtemp']
 
             else:
+                print("line 142 brew hit")
                 if avgtemp < 30:
                     lastcold = i
 
