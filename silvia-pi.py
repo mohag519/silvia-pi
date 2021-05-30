@@ -241,7 +241,7 @@ if __name__ == '__main__':
     timeState['TimerOnSu'] = conf.TimerOnSu
     timeState['TimerOffSu'] = conf.TimerOffSu
 
-    timeState['overRide'] = conf.overRide
+    timeState['overRide'] = False #conf.overRide
 
     pidstate['awake'] = timer.timer(timeState)
 
