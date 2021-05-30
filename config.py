@@ -15,7 +15,7 @@ steam_pin = 22
 
 
 #overriding the time config when wanting to heat up not during normal hours
-overRide = 16
+overRide = False #16
 
 # Default goal temperature
 set_temp = 93.
@@ -26,7 +26,7 @@ snooze = '07:00'
 #circuit breaker time in minutes convert to seconds
 circuitBreakerTime = 20 * 60
 
-TimerOnMo = '06:00'
+TimerOnMo = '00:00'
 TimerOffMo = '23:00'
 TimerOnTu = '06:00'
 TimerOffTu = '23:00'
