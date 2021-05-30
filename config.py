@@ -53,12 +53,12 @@ high_temp_s = 160
 sample_time = 0.1
 
 # PID Proportional, Integral, and Derivative values
-Pc = 5.6#3.4
-Ic = 1.2#0.6
+Pc = 6.4#5.6#3.4
+Ic = 0.6
 Dc = 40.0
 
-Pw = 5.6#2.9
-Iw = 1.2#0.6
+Pw = 6.4#5.6#2.9
+Iw = 0.6
 Dw = 40.0
 
 #Web/REST Server Options
