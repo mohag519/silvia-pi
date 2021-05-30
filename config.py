@@ -54,11 +54,11 @@ sample_time = 0.1
 
 # PID Proportional, Integral, and Derivative values
 Pc = 4.2#3.4
-Ic = 0.3
+Ic = 0.6
 Dc = 20.0#40.0
 
 Pw = 4.2#2.9
-Iw = 0.3
+Iw = 0.6
 Dw = 20.0#40.0
 
 #Web/REST Server Options
