@@ -8,8 +8,9 @@ def he_control_loop(dummy, state,timeState):
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(conf.he_pin, GPIO.OUT)
-    GPIO.setup(conf.steam_pin,GPIO.IN,GPIO.PUD_DOWN)
+    GPIO.setup(conf.steam_pin,GPIO.IN)
     GPIO.output(conf.he_pin, 0)
+    GPIO.input(conf.steam_pin)
     heating = False
 
     try:
@@ -25,7 +26,7 @@ def he_control_loop(dummy, state,timeState):
 
             avgpid = state['avgpid']
 
-            if not state['overRide'] and ( not state['awake'] or state['circuitBreaker'] ) :
+            if not state['awake'] or state['circuitBreaker']:
                 state['heating'] = False
                 GPIO.output(conf.he_pin, 0)
                 sleep(1)
@@ -241,7 +242,7 @@ if __name__ == '__main__':
     timeState['TimerOnSu'] = conf.TimerOnSu
     timeState['TimerOffSu'] = conf.TimerOffSu
 
-    pidstate['overRide'] = False #conf.overRide
+    timeState['overRide'] = False #conf.overRide
 
     pidstate['awake'] = timer.timer(timeState)
 
