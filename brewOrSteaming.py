@@ -13,7 +13,6 @@ def steaming(timeSinceLastSteaming):
     GPIO.setup(conf.steam_pin,GPIO.IN,GPIO.PUD_DOWN)
     steam_pin = GPIO.input(conf.steam_pin)
 
-    print("steam pin is ",steam_pin)
     if steam_pin == True:
         print("steaming")
         #resetted steam pin since new press
