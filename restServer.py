@@ -24,10 +24,10 @@ def rest_server(dummy, state,timeState):
 
     @route('/curtemp')
     def curtemp():
-        # with open("tempcsv.csv","a+",newline='') as tempFile:
-        #     fieldNames = ["time","avgtemp","settemp","steamtemp"]
-        #     writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
-        #     writer.writerow({"time": datetime.now(), "avgtemp":state["avgtemp"],"settemp":state["settemp"],"steamtemp":state["steamtemp"]})
+        with open("tempcsv.csv","a+",newline='') as tempFile:
+            fieldNames = ["time","avgtemp","settemp","steamtemp"]
+            writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
+            writer.writerow({"time": datetime.now(), "avgtemp":state["avgtemp"],"settemp":state["settemp"],"steamtemp":state["steamtemp"]})
         return str(state['avgtemp'])
 
     @get('/settemp')
@@ -86,7 +86,6 @@ def rest_server(dummy, state,timeState):
 
     @get('/allstats')
     def allstats():
-        with 
         return dict(state)
 
     @get('/alltime')
