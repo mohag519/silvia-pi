@@ -54,12 +54,12 @@ sample_time = 0.1
 
 # PID Proportional, Integral, and Derivative values
 Pc = 8.2#5.6#3.4
-Ic = 0.6#1.2
-Dc = 40.0
+Ic = 0#0.6#1.2
+Dc = 0#40.0
 
 Pw = 8.4#6.4#5.6#2.9
-Iw = 0.6#1.2
-Dw = 40.0
+Iw = 0#0.6#1.2
+Dw = 0#40.0
 
 #Web/REST Server Options
 port = 8080
