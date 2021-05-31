@@ -27,7 +27,9 @@ def rest_server(dummy, state,timeState):
         with open("tempcsv.csv","a+",newline='') as tempFile:
             fieldNames = ["time","avgtemp","settemp","steamtemp"]
             writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
+            print("line30")
             writer.writerow({"time": datetime.now(), "avgtemp":state["avgtemp"],"settemp":state["settemp"],"steamtemp":state["steamtemp"]})
+            print("line32")
         return str(state['avgtemp'])
 
     @get('/settemp')
