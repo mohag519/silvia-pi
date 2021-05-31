@@ -53,7 +53,7 @@ high_temp_s = 160
 sample_time = 0.1
 
 # PID Proportional, Integral, and Derivative value
-# we use Ziegler–Nichols method to tune, from experiment Ts=130sec, Ku = 22. Therefore
+# we use Ziegler Nichols method to tune, from experiment Ts=130sec, Ku = 22. Therefore
 Ku = 22
 Ts = 130
 
