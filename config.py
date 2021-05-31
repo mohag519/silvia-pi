@@ -69,4 +69,4 @@ Dw = Dc
 # Dw = 0#40.0
 
 #Web/REST Server Options
-port = 80
+port = 8080
