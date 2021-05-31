@@ -12,8 +12,7 @@ def he_control_loop(dummy, state,timeState):
     GPIO.output(conf.he_pin, 0)
     GPIO.input(conf.steam_pin)
     heating = False
-    with open("tempcsv.csv","a+",newline='') as tempFile:
-        pass
+
     try:
         while True:
             pidstate['awake'] = timer.timer(timeState)
