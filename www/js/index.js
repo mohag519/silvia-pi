@@ -173,7 +173,7 @@ setInterval(function () {
 	if (lastreqdone == 1) {
 		$.getJSON({
 			url: "/allstats",
-			timeout: 500,
+			timeout: 2000, //500,
 			success: function (resp) {
 				if (resp.snoozeon == true) {
 					$("#btnSnooze").hide();
@@ -183,7 +183,6 @@ setInterval(function () {
 					$("#btnSnoozeC").hide();
 				}
 
-				// TODO, need to CHANGE this to also get resp.steampin to ensure we are showing the steaming phase
 				curtemp.append(new Date().getTime(), resp.tempc);
 				if (resp.steam) {
 					settemp.append(new Date().getTime(), resp.steamtemp);

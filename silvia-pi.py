@@ -25,7 +25,7 @@ def he_control_loop(dummy, state,timeState):
             #         state['snoozeon'] = False
 
             avgpid = state['avgpid']
-
+            
             if not state['awake'] or state['circuitBreaker']:
                 state['heating'] = False
                 GPIO.output(conf.he_pin, 0)
