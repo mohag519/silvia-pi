@@ -225,7 +225,7 @@ function createTimeline() {
 	chart.addTimeSeries(settempm, { lineWidth: 1, strokeStyle: "#ffffff" });
 	chart.addTimeSeries(settempp, { lineWidth: 1, strokeStyle: "#ffffff" });
 	chart.addTimeSeries(curtemp, { lineWidth: 3, strokeStyle: "#ff0000" });
-	chart.streamTo(document.getElementById("chart"), 500);
+	chart.streamTo(document.getElementById("chart"), 2000); //500);
 
 	var pidchart = new SmoothieChart({
 		grid: { verticalSections: 3 },
