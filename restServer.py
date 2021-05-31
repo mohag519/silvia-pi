@@ -24,7 +24,7 @@ def rest_server(dummy, state,timeState):
 
     @route('/curtemp')
     def curtemp():
-        with open("tempcsv.csv","a+",newline='') as tempFile:
+        with open("tempcsv.csv","a+") as tempFile:
             fieldNames = ["time","avgtemp","settemp","steamtemp"]
             writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
             print("line30")
