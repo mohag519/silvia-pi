@@ -214,7 +214,7 @@ setInterval(function () {
 
 		lastreqdone = 0;
 	}
-}, 100);
+}, 1000);
 
 function createTimeline() {
 	var chart = new SmoothieChart({
