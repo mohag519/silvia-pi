@@ -177,9 +177,9 @@ def pid_loop(dummy, state):
                 pidhist[i/10 % 10] = pidout
                 avgpid = sum(pidhist)/len(pidhist)
 
-                print("pidout",pidout)
-                print("pidHist",pidhist)
-                print("avgpid",avgpid)
+                # print("pidout",pidout)
+                # print("pidHist",pidhist)
+                # print("avgpid",avgpid)
 
             state['i'] = i
             state['tempc'] = round(tempc, 2)
