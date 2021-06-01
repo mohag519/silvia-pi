@@ -101,6 +101,11 @@ def pid_loop(dummy, state):
                 nanct += 1
                 if nanct > 100000:
                     print("ERROR IN READING TEMPERATURE LINE 98")
+                    with open("Failedcsv.csv","a+") as tempFile:
+                        fieldNames = ["time","avgtemp","settemp","steamtemp"]
+                        writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
+                        writer.writerow({"time": datetime.now(), "avgtemp":state["avgtemp"],"settemp":state["settemp"],"steamtemp":state["steamtemp"]})
+        
                     sys.exit
                 continue
             else:
