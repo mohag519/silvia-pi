@@ -247,7 +247,7 @@ if __name__ == '__main__':
     timeState['TimerOnSu'] = conf.TimerOnSu
     timeState['TimerOffSu'] = conf.TimerOffSu
 
-    timeState['overRide'] = conf.overRide
+    # timeState['overRide'] = conf.overRide
 
     pidstate['awake'] = timer.timer(timeState)
 
@@ -283,10 +283,15 @@ if __name__ == '__main__':
 
         if piderr > 9:
             print ('ERROR IN PID THREAD, RESTARTING')
-            p.terminate()
+            with open("FailedPIDcsv.csv","a+") as tempFile:
+                fieldNames = ["time"]
+                writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
+                writer.writerow({"time": datetime.now()})
+        
+            # p.terminate()
 
         try:
-            hc = urlopen(urlhc, timeout=2)
+            hc = urlopen(urlhc, timeout=10)
         except:
             weberrflag = 1
         else:
@@ -298,7 +303,11 @@ if __name__ == '__main__':
 
         if weberr > 9:
             print ('ERROR IN WEB SERVER THREAD, RESTARTING')
-            r.terminate()
+            with open("FailedWEBcsv.csv","a+") as tempFile:
+                fieldNames = ["time"]
+                writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
+                writer.writerow({"time": datetime.now()})
+            # r.terminate()
 
         weberrflag = 0
 
