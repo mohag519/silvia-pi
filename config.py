@@ -26,20 +26,20 @@ snooze = '07:00'
 #circuit breaker time in minutes convert to seconds
 circuitBreakerTime = 20 * 60
 
-TimerOnMo = '08:20'
+TimerOnMo = '08:40'
 TimerOffMo = '10:00'
-TimerOnTu = '08:20'
+TimerOnTu = '08:40'
 TimerOffTu = '10:00'
-TimerOnWe = '08:20'
+TimerOnWe = '08:40'
 TimerOffWe = '10:00'
-TimerOnTh = '08:20'
+TimerOnTh = '08:40'
 TimerOffTh = '10:00'
-TimerOnFr = '08:20'
+TimerOnFr = '08:40'
 TimerOffFr = '10:00'
-TimerOnSa = '08:20'
-TimerOffSa = '10:00'
-TimerOnSu = '08:20'
-TimerOffSu = '10:00'
+TimerOnSa = '10:00'
+TimerOffSa = '12:00'
+TimerOnSu = '10:00'
+TimerOffSu = '12:00'
 
 
 #temp lowpoint and high point
