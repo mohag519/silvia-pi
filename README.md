@@ -1,6 +1,9 @@
 # silvia-pi
 A Raspberry Pi modification to the Rancilio Silvia Espresso Machine implementing PID temperature control.
 
+#### Medium article for walkthrough
+https://medium.com/@dannyhuang_10997/rancilio-silvia-pid-mpc-via-raspberry-pi-901a14fe5681
+
 #### Currently Implemented Features:
 * Brew temperature control
 * RESTful API
@@ -46,11 +49,6 @@ A Raspberry Pi modification to the Rancilio Silvia Espresso Machine implementing
 #### Hardware Installation
 [Installation Instructions / Pictures](http://imgur.com/a/3WLVt)
 
-#### Circuit Diagram
-High-level circuit diagram:
-
-![Circuit Diagram](media/circuit.png?raw=true "Circuit Diagram")
-
 #### Software
 * OS - Raspbian Jessie
   * Full - https://downloads.raspberrypi.org/raspbian_latest
@@ -71,7 +69,7 @@ sudo reboot
 
 After the reboot:
 ````
-sudo git clone git@github.com:Xascrimson/silvia-pi.git /root/silvia-pi
+sudo git clone https://github.com/brycesub/silvia-pi.git /root/silvia-pi
 sudo /root/silvia-pi/setup.sh
 ````
 This last step will download the necessariy python libraries and install the silvia-pi software in /root/silvia-pi
