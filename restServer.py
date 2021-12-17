@@ -1,9 +1,6 @@
-import csv 
-from datetime import datetime
-
 #!/usr/bin/python
-
 def rest_server(dummy, state,timeState):
+    from utility import utility
     from bottle import route, run, get, post, request, static_file, abort
     from subprocess import call
     from datetime import datetime
@@ -24,39 +21,35 @@ def rest_server(dummy, state,timeState):
 
     @route('/curtemp')
     def curtemp():
-        return str(state['avgtemp'])
+        return str(utility.c_to_f(state['avgtemp'])) if conf.use_fahrenheit else str(state['avgtemp'])
 
     @get('/settemp')
     def settemp():
-        return str(state['settemp'])
+        return str(utility.c_to_f(state['settemp'])) if conf.use_fahrenheit else str(state['settemp'])
 
     @post('/settemp')
     def post_settemp():
         try:
-            settemp = float(request.forms.get('settemp'))
+            settemp = str(utility.f_to_c(float(request.forms.get('settemp')))) if conf.use_fahrenheit else float(request.forms.get('settemp'))
             if settemp >= conf.low_temp_b and settemp <= conf.high_temp_b:
                 state['settemp'] = settemp
                 return str(settemp)
             else:
-                print("wrong temp 186")
-                # abort(400,'Set temp out of range 200-260.')
+                abort(400, 'Temperature out of range.')
         except:
-            print("line189 wrong number set temp")
-            # abort(400,'Invalid number for set temp.')
+            abort(400,'Invalid value for set temp.')
 
     @post('/setsteamtemp')
     def post_setsteamtemp():
         try:
-            steamtemp = float(request.forms.get('steamtemp'))
+            steamtemp = str(utility.f_to_c(float(request.forms.get('steamtemp')))) if conf.use_fahrenheit else float(request.forms.get('steamtemp'))
             if steamtemp >= conf.low_temp_s and steamtemp <= conf.high_temp_s:
                 state['steamtemp'] = steamtemp
                 return str(steamtemp)
             else:
-                print("wrong temp 53")
-                # abort(400,'Set temp out of range 200-260.')
+                abort(400, 'Temperature out of range.')
         except:
-            print("line56 wrong number set temp")
-            # abort(400,'Invalid number for set temp.')
+            abort(400,'Invalid value for set temp.')
 
 
     @get('/snooze')
@@ -82,11 +75,6 @@ def rest_server(dummy, state,timeState):
 
     @get('/allstats')
     def allstats():
-        
-        # with open("tempcsv.csv","a+") as tempFile:
-        #     fieldNames = ["time","avgtemp","settemp","steamtemp"]
-        #     writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
-        #     writer.writerow({"time": datetime.now(), "avgtemp":state["avgtemp"],"settemp":state["settemp"],"steamtemp":state["steamtemp"]})
         return dict(state)
 
     @get('/alltime')
@@ -257,9 +245,8 @@ def rest_server(dummy, state,timeState):
             datetime.strptime(TimerOffSu,'%H:%M')
         except:
             pass
-    #       abort(400,'Invalid time format.')
         timeState['TimerOffSu'] = TimerOffSu
         return str(TimerOffSu)
 
 
-    run(host='0.0.0.0', port=conf.port, server='auto')
+    run(host=conf.host, port=conf.port)

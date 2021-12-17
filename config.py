@@ -18,8 +18,12 @@ steam_pin = 22
 overRide = 16
 
 # Default goal temperature
-set_temp = 100.
+set_temp = 96.
 set_steam_temp = 145.
+
+#Use Fahrenheit?
+use_fahrenheit = False
+
 # Default alarm time
 snooze = '07:00'
 
@@ -42,7 +46,7 @@ TimerOnSu = '10:00'
 TimerOffSu = '12:00'
 
 
-#temp lowpoint and high point
+#temp lowpoint and high point (Celsius)
 low_temp_b = 85
 high_temp_b = 110
 
@@ -58,7 +62,7 @@ Ku = 22
 Ts = 130
 
 Pc = 0.55 * Ku#22#8.2#5.6#3.4
-Ic = 1.2 * Ku/Ts#0.6#1.2
+Ic = 1.2 * Ku//Ts#0.6#1.2
 Dc = 0.075 * Ku * Ts #40.0
 
 Pw = Pc
@@ -69,4 +73,5 @@ Dw = Dc
 # Dw = 0#40.0
 
 #Web/REST Server Options
+host = '0.0.0.0'
 port = 8080

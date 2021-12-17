@@ -1,5 +1,6 @@
 #!/usr/bin/python
-import csv 
+from utility import utility
+
 
 def he_control_loop(dummy, state,timeState):
     from time import sleep
@@ -39,9 +40,9 @@ def he_control_loop(dummy, state,timeState):
                 elif avgpid > 0 and avgpid < 100:
                     state['heating'] = True
                     GPIO.output(conf.he_pin, 1)
-                    sleep(avgpid/100.)
+                    sleep(avgpid//100.)
                     GPIO.output(conf.he_pin, 0)
-                    sleep(1-(avgpid/100.))
+                    sleep(1-(avgpid//100.))
                     state['heating'] = False
                 else:
                     GPIO.output(conf.he_pin, 0)
@@ -64,10 +65,6 @@ def pid_loop(dummy, state):
     from datetime import datetime
     from brewOrSteaming import steaming
     import RPi.GPIO as GPIO
-
-
-    def c_to_f(c):
-        return c * 9.0 / 5.0 + 32.0
 
     sensor = MAX31855.MAX31855(spi=SPI.SpiDev(conf.spi_port, conf.spi_dev))
 
@@ -102,19 +99,13 @@ def pid_loop(dummy, state):
                 nanct += 1
                 if nanct > 100000:
                     print("ERROR IN READING TEMPERATURE LINE 98")
-                    with open("Failedcsv.csv","a+") as tempFile:
-                        fieldNames = ["time","avgtemp","settemp","steamtemp"]
-                        writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
-                        writer.writerow({"time": datetime.now(), "avgtemp":state["avgtemp"],"settemp":state["settemp"],"steamtemp":state["steamtemp"]})
-        
                     sys.exit
                 continue
             else:
                 nanct = 0
 
-            # tempf = c_to_f(tempc)
             temphist[i % 5] = tempc
-            avgtemp = sum(temphist)/len(temphist)
+            avgtemp = sum(temphist)//len(temphist)
             
             #circuitbreaker is on
             if circuitBreaker:
@@ -175,15 +166,15 @@ def pid_loop(dummy, state):
             if i % 10 == 0:
                 pid.update(avgtemp)
                 pidout = pid.output
-                pidhist[i/10 % 10] = pidout
-                avgpid = sum(pidhist)/len(pidhist)
+                pidhist[i//10 % 10] = pidout
+                avgpid = sum(pidhist)//len(pidhist)
 
                 # print("pidout",pidout)
                 # print("pidHist",pidhist)
                 # print("avgpid",avgpid)
 
             state['i'] = i
-            state['tempc'] = round(tempc, 2)
+            state['temp'] = round(utility.c_to_f(tempc), 2) if conf.use_fahrenheit else round(tempc, 2)
             state['avgtemp'] = round(avgtemp, 2)
             state['pidval'] = round(pidout, 2)
             state['avgpid'] = round(avgpid, 2)
@@ -197,7 +188,7 @@ def pid_loop(dummy, state):
             state['iscold'] = iscold
 
             print (datetime.now())
-            print(state)
+            printState(state)
             print("time since last steam", timeSinceLastSteam)
 
             sleeptime = lasttime+conf.sample_time-time()
@@ -211,12 +202,14 @@ def pid_loop(dummy, state):
         GPIO.cleanup()
         pid.clear
 
-
+def printState(state):
+    for key, value in state.items():
+        print(f'{key} : {value}')
 
 if __name__ == '__main__':
     from multiprocessing import Process, Manager
     from time import sleep
-    from urllib2 import urlopen
+    from urllib.request import urlopen
     import config as conf
     import timer
     from restServer import rest_server
@@ -281,23 +274,18 @@ if __name__ == '__main__':
         else:
             piderr = 0
 
-        lasti = curi
-
         if piderr > 9:
             print ('ERROR IN PID THREAD, RESTARTING')
-            with open("FailedPIDcsv.csv","a+") as tempFile:
-                fieldNames = ["time"]
-                writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
-                writer.writerow({"time": datetime.now()})
+            p.terminate()
         
-            # p.terminate()
+        lasti = curi
 
         try:
-            hc = urlopen(urlhc, timeout=10)
+            healthcheck = urlopen(urlhc, timeout=10)
         except:
             weberrflag = 1
         else:
-            if hc.getcode() != 200:
+            if healthcheck.getcode() != 200:
                 weberrflag = 1
 
         if weberrflag != 0:
@@ -305,11 +293,7 @@ if __name__ == '__main__':
 
         if weberr > 9:
             print ('ERROR IN WEB SERVER THREAD, RESTARTING')
-            with open("FailedWEBcsv.csv","a+") as tempFile:
-                fieldNames = ["time"]
-                writer = csv.DictWriter(tempFile,fieldnames=fieldNames)
-                writer.writerow({"time": datetime.now()})
-            # r.terminate()
+            r.terminate()
 
         weberrflag = 0
 
