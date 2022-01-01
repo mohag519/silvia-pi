@@ -62,8 +62,7 @@ def rest_server(dummy, state,timeState):
         try:
             datetime.strptime(snooze, '%H:%M')
         except:
-            print("line202,wrong time format")
-            # abort(400,'Invalid time format.')
+            abort(400,'Invalid time format.')
         state['snoozeon'] = True
         state['snooze'] = snooze
         return str(snooze)

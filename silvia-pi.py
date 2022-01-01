@@ -1,8 +1,5 @@
 #!/usr/bin/python
-from utility import utility
-
-
-def he_control_loop(dummy, state,timeState):
+def he_control_loop(_, state, timeState):
     from time import sleep
     from datetime import datetime, timedelta
     import RPi.GPIO as GPIO
@@ -13,19 +10,10 @@ def he_control_loop(dummy, state,timeState):
     GPIO.setup(conf.steam_pin,GPIO.IN)
     GPIO.output(conf.he_pin, 0)
     GPIO.input(conf.steam_pin)
-    heating = False
 
     try:
         while True:
-            pidstate['awake'] = timer.timer(timeState)
-
-
-            # if state['snoozeon'] == True:
-            #     now = datetime.now()
-            #     dt = datetime.strptime(state['snooze'], '%H:%M')
-            #     if dt.hour == now.hour and dt.minute == now.minute:
-            #         state['snoozeon'] = False
-
+            state['awake'] = True#timer.timer(timeState)
             avgpid = state['avgpid']
             
             if not state['awake'] or state['circuitBreaker']:
@@ -53,7 +41,6 @@ def he_control_loop(dummy, state,timeState):
         GPIO.output(conf.he_pin, 0)
         GPIO.cleanup()
 
-
 def pid_loop(dummy, state):
     import sys
     from time import sleep, time
@@ -62,12 +49,13 @@ def pid_loop(dummy, state):
     import board
     import PID as PID
     import config as conf
-    from datetime import datetime
     from brewOrSteaming import steaming
     import RPi.GPIO as GPIO
     import digitalio
 
-    sensor = MAX31855.MAX31855(board.SPI(), digitalio.DigitalInOut(board.D5))
+    sensorPin = digitalio.DigitalInOut(board.D5)
+    sensor = MAX31855.MAX31855(board.SPI(), sensorPin)
+
     pid = PID.PID(conf.Pc, conf.Ic, conf.Dc)
     pid.SetPoint = state['settemp']
     pid.setSampleTime(conf.sample_time*5)
@@ -90,11 +78,12 @@ def pid_loop(dummy, state):
 
     try:
         while True:  # Loops 10x/second
-            tempc = sensor.temperature
+            temp = sensor.temperature
             steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam)
-            state['circuitBreaker'] = circuitBreaker
             state['steam'] = steam
-            if isnan(tempc):
+            state['circuitBreaker'] = circuitBreaker
+
+            if isnan(temp): #TODO: Implement detection of temp runaway
                 nanct += 1
                 if nanct > 100000:
                     print("ERROR IN READING TEMPERATURE")
@@ -103,7 +92,7 @@ def pid_loop(dummy, state):
             else:
                 nanct = 0
 
-            temphist[i % 5] = tempc
+            temphist[i % 5] = temp
             avgtemp = sum(temphist)//len(temphist)
             
             #circuitbreaker is on
@@ -166,12 +155,8 @@ def pid_loop(dummy, state):
                 pidhist[i//10 % 10] = pidout
                 avgpid = sum(pidhist)//len(pidhist)
 
-                # print("pidout",pidout)
-                # print("pidHist",pidhist)
-                # print("avgpid",avgpid)
-
             state['i'] = i
-            state['temp'] = tempc
+            state['temp'] = temp
             state['avgtemp'] = round(avgtemp, 2)
             state['pidval'] = round(pidout, 2)
             state['avgpid'] = round(avgpid, 2)
@@ -196,6 +181,7 @@ def pid_loop(dummy, state):
 
     finally:
         GPIO.cleanup()
+        sensorPin.deinit()
         pid.clear
 
 def printState(state):
