@@ -58,23 +58,22 @@ def pid_loop(dummy, state):
     import sys
     from time import sleep, time
     from math import isnan
-    import Adafruit_GPIO.SPI as SPI
-    import Adafruit_MAX31855.MAX31855 as MAX31855
+    import adafruit_max31855 as MAX31855
+    import board
     import PID as PID
     import config as conf
     from datetime import datetime
     from brewOrSteaming import steaming
     import RPi.GPIO as GPIO
+    import digitalio
 
-    sensor = MAX31855.MAX31855(spi=SPI.SpiDev(conf.spi_port, conf.spi_dev))
-
+    sensor = MAX31855.MAX31855(board.SPI(), digitalio.DigitalInOut(board.D5))
     pid = PID.PID(conf.Pc, conf.Ic, conf.Dc)
     pid.SetPoint = state['settemp']
     pid.setSampleTime(conf.sample_time*5)
 
     nanct = 0
     i = 0
-    j = 0
     pidhist = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
     avgpid = 0.
     temphist = [0., 0., 0., 0., 0.]
@@ -91,14 +90,14 @@ def pid_loop(dummy, state):
 
     try:
         while True:  # Loops 10x/second
-            tempc = sensor.readTempC()
+            tempc = sensor.temperature
             steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam)
             state['circuitBreaker'] = circuitBreaker
             state['steam'] = steam
             if isnan(tempc):
                 nanct += 1
                 if nanct > 100000:
-                    print("ERROR IN READING TEMPERATURE LINE 98")
+                    print("ERROR IN READING TEMPERATURE")
                     sys.exit
                 continue
             else:
@@ -112,7 +111,6 @@ def pid_loop(dummy, state):
                 continue
 
             if state['steam'] :
-                print("line 118 steam on hit")
                 if avgtemp < 90:
                     lastcold = i
 
@@ -139,7 +137,6 @@ def pid_loop(dummy, state):
                 print("avg temp",avgtemp)
 
             else:
-                print("line 142 brew hit")
                 if avgtemp < 30:
                     lastcold = i
 
@@ -174,7 +171,7 @@ def pid_loop(dummy, state):
                 # print("avgpid",avgpid)
 
             state['i'] = i
-            state['temp'] = round(utility.c_to_f(tempc), 2) if conf.use_fahrenheit else round(tempc, 2)
+            state['temp'] = tempc
             state['avgtemp'] = round(avgtemp, 2)
             state['pidval'] = round(pidout, 2)
             state['avgpid'] = round(avgpid, 2)
@@ -187,9 +184,8 @@ def pid_loop(dummy, state):
                 state['dterm'] = round(pid.DTerm * conf.Dw, 2)
             state['iscold'] = iscold
 
-            print (datetime.now())
-            printState(state)
-            print("time since last steam", timeSinceLastSteam)
+            if i % 10 == 0:
+                printState(state)
 
             sleeptime = lasttime+conf.sample_time-time()
             if sleeptime < 0:

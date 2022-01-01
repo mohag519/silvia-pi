@@ -3,3 +3,4 @@ cheroot
 RPi.GPIO
 spidev
 schedule
+adafruit-circuitpython-max31855
