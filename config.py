@@ -14,8 +14,9 @@ brew_pin = 17
 steam_pin = 22
 
 
-#overriding the time config when wanting to heat up not during normal hours
-overRide = 16
+#overriding strictly or through pin for scheduled heating. 'True' or pin=on means always on.
+override = True
+override_pin = 16
 
 # Default goal temperature
 set_temp = 96.
@@ -30,6 +31,7 @@ snooze = '07:00'
 #circuit breaker time in minutes convert to seconds
 circuitBreakerTime = 20 * 60
 
+#TODO: Change this into a matrix.
 TimerOnMo = '08:40'
 TimerOffMo = '10:00'
 TimerOnTu = '08:40'

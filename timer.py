@@ -7,8 +7,8 @@ def timer(state):
     import RPi.GPIO as GPIO
     
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(conf.overRide,GPIO.IN,GPIO.PUD_DOWN)
-    overRide = GPIO.input(conf.overRide)
+    GPIO.setup(conf.override_pin,GPIO.IN,GPIO.PUD_DOWN)
+    override = GPIO.input(conf.override_pin) or conf.override 
 
     now = datetime.now()
     weekday = now.weekday()
@@ -28,7 +28,7 @@ def timer(state):
     t_onSu = datetime.strptime(state['TimerOnSu'],'%H:%M')
     t_offSu = datetime.strptime(state['TimerOffSu'],'%H:%M')
 
-    if overRide == True:
+    if override == True:
         print("override is TRUE")
         return True
         

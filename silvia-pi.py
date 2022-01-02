@@ -7,13 +7,11 @@ def he_control_loop(_, state, timeState):
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(conf.he_pin, GPIO.OUT)
-    GPIO.setup(conf.steam_pin,GPIO.IN)
     GPIO.output(conf.he_pin, 0)
-    GPIO.input(conf.steam_pin)
 
     try:
         while True:
-            state['awake'] = True#timer.timer(timeState)
+            state['awake'] = timer.timer(timeState)
             avgpid = state['avgpid']
             
             if not state['awake'] or state['circuitBreaker']:
@@ -224,7 +222,7 @@ if __name__ == '__main__':
     timeState['TimerOnSu'] = conf.TimerOnSu
     timeState['TimerOffSu'] = conf.TimerOffSu
 
-    # timeState['overRide'] = conf.overRide
+    # timeState['override'] = conf.override
 
     pidstate['awake'] = timer.timer(timeState)
 
