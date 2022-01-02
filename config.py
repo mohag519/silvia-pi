@@ -7,7 +7,7 @@ spi_port = 0
 spi_dev = 0
 
 
-# Pin # for relay connected to heating element
+# Pin # for relay connected to heating element (Note: GPIO pin#)
 he_pin = 26
 
 brew_pin = 17

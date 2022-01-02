@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import json
+
 def rest_server(dummy, state,timeState):
     from utility import utility
     from bottle import route, run, get, post, request, static_file, abort
@@ -42,7 +44,8 @@ def rest_server(dummy, state,timeState):
     @post('/setsteamtemp')
     def post_setsteamtemp():
         try:
-            steamtemp = str(utility.f_to_c(float(request.forms.get('steamtemp')))) if conf.use_fahrenheit else float(request.forms.get('steamtemp'))
+            tempInput = float(request.forms.get('steamtemp'))
+            steamtemp = utility.f_to_c(tempInput) if conf.use_fahrenheit else tempInput
             if steamtemp >= conf.low_temp_s and steamtemp <= conf.high_temp_s:
                 state['steamtemp'] = steamtemp
                 return str(steamtemp)
@@ -51,6 +54,14 @@ def rest_server(dummy, state,timeState):
         except:
             abort(400,'Invalid value for set temp.')
 
+    @get('/pid')
+    def getpid():
+        pidValues = {
+            "p": state['pterm'],
+            "i": state['iterm'],
+            "d": state['dterm']
+        }
+        return json.dumps(pidValues)
 
     @get('/snooze')
     def get_snooze():
