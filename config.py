@@ -59,20 +59,9 @@ high_temp_s = 160
 sample_time = 0.1
 
 # PID Proportional, Integral, and Derivative value
-# we use Ziegler Nichols method to tune, from experiment Ts=130sec, Ku = 22. Therefore
-Ku = 22
-Ts = 130
-
-Pc = 0.55 * Ku#22#8.2#5.6#3.4
-Ic = 1.2 * Ku//Ts#0.6#1.2
-Dc = 0.075 * Ku * Ts #40.0
-
-Pw = Pc
-Iw = Ic
-Dw = Dc
-# Pw = 22#8.4#6.4#5.6#2.9
-# Iw = 0#0.6#1.2
-# Dw = 0#40.0
+P = 3.3
+I = 0.3
+D = 22.0
 
 #Web/REST Server Options
 host = '0.0.0.0'

@@ -54,7 +54,7 @@ def pid_loop(dummy, state):
     sensorPin = digitalio.DigitalInOut(board.D5)
     sensor = MAX31855.MAX31855(board.SPI(), sensorPin)
 
-    pid = PID.PID(conf.Pc, conf.Ic, conf.Dc)
+    pid = PID.PID(conf.P, conf.I, conf.D)
     pid.SetPoint = state['settemp']
     pid.setSampleTime(conf.sample_time*5)
 
@@ -67,10 +67,6 @@ def pid_loop(dummy, state):
     lastsettemp = state['settemp']
     lasttime = time()
     sleeptime = 0
-    iscold = True
-    iswarm = False
-    lastcold = 0
-    lastwarm = 0
     circuitBreaker = False
     timeSinceLastSteam = None
 
@@ -81,7 +77,7 @@ def pid_loop(dummy, state):
             state['steam'] = steam
             state['circuitBreaker'] = circuitBreaker
 
-            if isnan(temp): #TODO: Implement detection of temp runaway
+            if isnan(temp):
                 nanct += 1
                 if nanct > 100000:
                     print("ERROR IN READING TEMPERATURE")
@@ -98,54 +94,19 @@ def pid_loop(dummy, state):
                 continue
 
             if state['steam'] :
-                if avgtemp < 90:
-                    lastcold = i
-
-                if avgtemp > 130:
-                    lastwarm = i
-
-                if iscold and (i-lastcold)*conf.sample_time > 60*15:
-                    pid = PID.PID(conf.Pw, conf.Iw, conf.Dw)
-                    pid.SetPoint = state['steamtemp']
-                    pid.setSampleTime(conf.sample_time*5)
-                    iscold = False
-
-                if iswarm and (i-lastwarm)*conf.sample_time > 60*15:
-                    pid = PID.PID(conf.Pc, conf.Ic, conf.Dc)
-                    pid.SetPoint = state['steamtemp']
-                    pid.setSampleTime(conf.sample_time*5)
-                    iscold = True
+                pid.SetPoint = state['steamtemp']
+                pid.setSampleTime(conf.sample_time*5)
 
                 if state['steamtemp'] != lastsettemp:
                     pid.SetPoint = state['steamtemp']
                     lastsettemp = state['steamtemp']
-                
-                print("pid.setpoint",pid.SetPoint)
-                print("avg temp",avgtemp)
-
             else:
-                if avgtemp < 30:
-                    lastcold = i
-
-                if avgtemp > 90:
-                    lastwarm = i
-
-                if iscold and (i-lastcold)*conf.sample_time > 60*15:
-                    pid = PID.PID(conf.Pw, conf.Iw, conf.Dw)
-                    pid.SetPoint = state['settemp']
-                    pid.setSampleTime(conf.sample_time*5)
-                    iscold = False
-
-                if iswarm and (i-lastwarm)*conf.sample_time > 60*15:
-                    pid = PID.PID(conf.Pc, conf.Ic, conf.Dc)
-                    pid.SetPoint = state['settemp']
-                    pid.setSampleTime(conf.sample_time*5)
-                    iscold = True
+                pid.SetPoint = state['settemp']
+                pid.setSampleTime(conf.sample_time*5)
 
                 if state['settemp'] != lastsettemp:
                     pid.SetPoint = state['settemp']
                     lastsettemp = state['settemp']
-
 
             if i % 10 == 0:
                 pid.update(avgtemp)
@@ -159,13 +120,8 @@ def pid_loop(dummy, state):
             state['pidval'] = round(pidout, 2)
             state['avgpid'] = round(avgpid, 2)
             state['pterm'] = round(pid.PTerm, 2)
-            if iscold:
-                state['iterm'] = round(pid.ITerm * conf.Ic, 2)
-                state['dterm'] = round(pid.DTerm * conf.Dc, 2)
-            else:
-                state['iterm'] = round(pid.ITerm * conf.Iw, 2)
-                state['dterm'] = round(pid.DTerm * conf.Dw, 2)
-            state['iscold'] = iscold
+            state['iterm'] = round(pid.ITerm * conf.I, 2)
+            state['dterm'] = round(pid.DTerm * conf.D, 2)
 
             if i % 10 == 0:
                 printState(state)
