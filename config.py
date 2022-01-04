@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+import board
 #PIN 0-8 3v3 pull-up default, 9-27 pull-down default
 
 # Raspberry Pi SPI Port and Device
@@ -10,13 +10,15 @@ spi_dev = 0
 # Pin # for relay connected to heating element (Note: GPIO pin#)
 he_pin = 26
 
-brew_pin = 17
+thermo_pin = board.D5
 steam_pin = 22
 
 
 #overriding strictly or through pin for scheduled heating. 'True' or pin=on means always on.
 override = True
 override_pin = 16
+
+led_pin = 6
 
 # Default goal temperature
 set_temp = 96.

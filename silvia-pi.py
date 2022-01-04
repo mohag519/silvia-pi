@@ -34,7 +34,6 @@ def he_control_loop(_, state, timeState):
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
                     sleep(1)
-
     finally:
         GPIO.output(conf.he_pin, 0)
         GPIO.cleanup()
@@ -51,7 +50,7 @@ def pid_loop(dummy, state):
     import RPi.GPIO as GPIO
     import digitalio
 
-    sensorPin = digitalio.DigitalInOut(board.D5)
+    sensorPin = digitalio.DigitalInOut(conf.thermo_pin)
     sensor = MAX31855.MAX31855(board.SPI(), sensorPin)
 
     pid = PID.PID(conf.P, conf.I, conf.D)
@@ -64,7 +63,6 @@ def pid_loop(dummy, state):
     avgpid = 0.
     temphist = [0., 0., 0., 0., 0.]
     avgtemp = 0.
-    lastsettemp = state['settemp']
     lasttime = time()
     sleeptime = 0
     circuitBreaker = False
@@ -93,20 +91,10 @@ def pid_loop(dummy, state):
             if circuitBreaker:
                 continue
 
-            if state['steam'] :
+            if state['steam'] == True and state['steamtemp'] != pid.SetPoint:
                 pid.SetPoint = state['steamtemp']
-                pid.setSampleTime(conf.sample_time*5)
-
-                if state['steamtemp'] != lastsettemp:
-                    pid.SetPoint = state['steamtemp']
-                    lastsettemp = state['steamtemp']
-            else:
+            elif state['steam'] == False and state['settemp'] != pid.SetPoint:
                 pid.SetPoint = state['settemp']
-                pid.setSampleTime(conf.sample_time*5)
-
-                if state['settemp'] != lastsettemp:
-                    pid.SetPoint = state['settemp']
-                    lastsettemp = state['settemp']
 
             if i % 10 == 0:
                 pid.update(avgtemp)
@@ -149,7 +137,7 @@ if __name__ == '__main__':
     import config as conf
     import timer
     from restServer import rest_server
-    from datetime import datetime
+    import RPi.GPIO as GPIO
 
     manager = Manager()
     pidstate = manager.dict()
@@ -203,34 +191,43 @@ if __name__ == '__main__':
     lasti = pidstate['i']
     sleep(1)
 
-    while p.is_alive() and h.is_alive() and r.is_alive():
-        curi = pidstate['i']
-        if curi == lasti:
-            piderr = piderr + 1
-        else:
-            piderr = 0
+    #Setting up led, will in this case work as a indicator if mainprocess is running
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(conf.led_pin, GPIO.OUT)
+    GPIO.output(conf.led_pin, 0)
 
-        if piderr > 9:
-            print ('ERROR IN PID THREAD, RESTARTING')
-            p.terminate()
-        
-        lasti = curi
+    try:
+        while p.is_alive() and h.is_alive() and r.is_alive():
+            GPIO.output(conf.led_pin, 1)
+            curi = pidstate['i']
+            if curi == lasti:
+                piderr = piderr + 1
+            else:
+                piderr = 0
 
-        try:
-            healthcheck = urlopen(urlhc, timeout=10)
-        except:
-            weberrflag = 1
-        else:
-            if healthcheck.getcode() != 200:
+            if piderr > 9:
+                print ('ERROR IN PID THREAD, RESTARTING')
+                p.terminate()
+            
+            lasti = curi
+
+            try:
+                healthcheck = urlopen(urlhc, timeout=10)
+            except:
                 weberrflag = 1
+            else:
+                if healthcheck.getcode() != 200:
+                    weberrflag = 1
 
-        if weberrflag != 0:
-            weberr = weberr + 1
+            if weberrflag != 0:
+                weberr = weberr + 1
 
-        if weberr > 9:
-            print ('ERROR IN WEB SERVER THREAD, RESTARTING')
-            r.terminate()
+            if weberr > 9:
+                print ('ERROR IN WEB SERVER THREAD, RESTARTING')
+                r.terminate()
 
-        weberrflag = 0
+            weberrflag = 0
 
-        sleep(1)
+            sleep(1)
+    finally:
+        GPIO.cleanup()
