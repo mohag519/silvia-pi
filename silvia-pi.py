@@ -53,7 +53,7 @@ def pid_loop(dummy, state):
     sensorPin = digitalio.DigitalInOut(conf.thermo_pin)
     sensor = MAX31855.MAX31855(board.SPI(), sensorPin)
 
-    pid = PID.PID(conf.P, conf.I, conf.D)
+    pid = PID.PID(state['Kp'], state['Ki'], state['Kd'])
     pid.SetPoint = state['settemp']
     pid.setSampleTime(conf.sample_time*5)
 
@@ -70,6 +70,7 @@ def pid_loop(dummy, state):
 
     try:
         while True:  # Loops 10x/second
+            pid = PID.PID(state['Kp'], state['Ki'], state['Kd'])
             temp = sensor.temperature
             steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam)
             state['steam'] = steam
@@ -111,6 +112,9 @@ def pid_loop(dummy, state):
             state['pterm'] = round(pid.PTerm, 2)
             state['iterm'] = round(pid.ITerm * conf.I, 2)
             state['dterm'] = round(pid.DTerm * conf.D, 2)
+            state['Kp'] = round(pid.Kp, 2)
+            state['Ki'] = round(pid.Ki, 2)
+            state['Kd'] = round(pid.Kd, 2)
 
             if i % 10 == 0:
                 printState(state)
@@ -150,6 +154,9 @@ if __name__ == '__main__':
     pidstate['circuitBreaker'] = None
     pidstate['steam'] = False
     pidstate['avgpid'] = 0.
+    pidstate['Kp'] = conf.P
+    pidstate['Ki'] = conf.I
+    pidstate['Kd'] = conf.D
 
     timeState = manager.dict()    
     timeState['TimerOnMo'] = conf.TimerOnMo
