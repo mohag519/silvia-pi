@@ -14,7 +14,6 @@ def steaming(timeSinceLastSteaming):
     steam_pin = GPIO.input(conf.steam_pin)
 
     if steam_pin == True:
-        print("steaming")
         #resetted steam pin since new press
         if timeSinceLastSteaming == None:
             timeSinceLastSteaming = time()

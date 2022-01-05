@@ -91,9 +91,9 @@ def pid_loop(dummy, state):
             if circuitBreaker:
                 continue
 
-            if state['steam'] == True and state['steamtemp'] != pid.SetPoint:
+            if steam and state['steamtemp'] != pid.SetPoint:
                 pid.SetPoint = state['steamtemp']
-            elif state['steam'] == False and state['settemp'] != pid.SetPoint:
+            elif not steam and state['settemp'] != pid.SetPoint:
                 pid.SetPoint = state['settemp']
 
             if i % 10 == 0:
@@ -105,6 +105,7 @@ def pid_loop(dummy, state):
             state['i'] = i
             state['temp'] = temp
             state['avgtemp'] = round(avgtemp, 2)
+            state['setpoint'] = pid.SetPoint
             state['pidval'] = round(pidout, 2)
             state['avgpid'] = round(avgpid, 2)
             state['pterm'] = round(pid.PTerm, 2)
@@ -174,11 +175,11 @@ if __name__ == '__main__':
     p.daemon = True
     p.start()
 
-    h = Process(target=he_control_loop, args=(1, pidstate,timeState))
+    h = Process(target=he_control_loop, args=(1, pidstate, timeState))
     h.daemon = True
     h.start()
 
-    r = Process(target=rest_server, args=(1, pidstate,timeState))
+    r = Process(target=rest_server, args=(1, pidstate, timeState))
     r.daemon = True
     r.start()
 
