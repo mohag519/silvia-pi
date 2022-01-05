@@ -167,7 +167,7 @@ if __name__ == '__main__':
     timeState['TimerOnSu'] = conf.TimerOnSu
     timeState['TimerOffSu'] = conf.TimerOffSu
 
-    # timeState['override'] = conf.override
+    # timeState['override'] = conf.always_override
 
     pidstate['awake'] = timer.timer(timeState)
 

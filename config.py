@@ -6,10 +6,10 @@ import board
 he_pin = 26
 
 thermo_pin = board.D5
-steam_pin = 13
+steam_pin = 22
 
 #overriding strictly or through pin for scheduled heating. 'True' or pin=on means always on.
-override = True
+always_override = True
 override_pin = 19
 
 led_pin = 6

@@ -8,7 +8,7 @@ def timer(state):
     
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(conf.override_pin,GPIO.IN,GPIO.PUD_DOWN)
-    override = GPIO.input(conf.override_pin) or conf.override 
+    override = GPIO.input(conf.override_pin) or conf.always_override 
 
     now = datetime.now()
     weekday = now.weekday()
