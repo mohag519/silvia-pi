@@ -45,19 +45,19 @@ TimerOffSu = '12:00'
 
 
 #temp lowpoint and high point (Celsius)
-low_temp_b = 85
+low_temp_b = 0
 high_temp_b = 110
 
 low_temp_s = 130
 high_temp_s = 160
 
 # Main loop sample rate in seconds
-sample_time = 0.1
+sample_time = 0.2
 
 # PID Proportional, Integral, and Derivative value
-P = 3.3
-I = 0.3
-D = 22.0
+P = 11.
+I = 3.5
+D = 25.
 
 #Web/REST Server Options
 host = '0.0.0.0'

@@ -57,11 +57,19 @@ def rest_server(dummy, state,timeState):
     @get('/pid')
     def getpid():
         pidValues = {
-            "p": state['pterm'],
-            "i": state['iterm'],
-            "d": state['dterm']
+            "p": state['Kp'],
+            "i": state['Ki'],
+            "d": state['Kp']
         }
         return json.dumps(pidValues)
+
+    @post('/pid')
+    def setpid():
+        pid = request.json
+        
+        state['Kp'] = float(pid["p"])
+        state['Ki'] = float(pid["i"])
+        state['Kd'] = float(pid["d"])
 
     @get('/snooze')
     def get_snooze():

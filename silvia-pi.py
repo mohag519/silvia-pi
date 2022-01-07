@@ -1,7 +1,6 @@
 #!/usr/bin/python
 def he_control_loop(_, state, timeState):
     from time import sleep
-    from datetime import datetime, timedelta
     import RPi.GPIO as GPIO
     import config as conf
 
@@ -9,31 +8,33 @@ def he_control_loop(_, state, timeState):
     GPIO.setup(conf.he_pin, GPIO.OUT)
     GPIO.output(conf.he_pin, 0)
 
+    heating_interval = 1
+
     try:
         while True:
             state['awake'] = timer.timer(timeState)
-            avgpid = state['avgpid']
+            pidval = state['pidval']
             
             if not state['awake'] or state['circuitBreaker']:
                 state['heating'] = False
                 GPIO.output(conf.he_pin, 0)
-                sleep(1)
+                sleep(heating_interval)
             else:
-                if avgpid >= 100:
+                if pidval >= 100:
                     state['heating'] = True
                     GPIO.output(conf.he_pin, 1)
-                    sleep(1)
-                elif avgpid > 0 and avgpid < 100:
-                    state['heating'] = True
+                    sleep(heating_interval)
+                elif pidval > 0 and pidval < 100:
                     GPIO.output(conf.he_pin, 1)
-                    sleep(avgpid//100.)
+                    state['heating'] = True
+                    sleep(pidval//100.)
                     GPIO.output(conf.he_pin, 0)
-                    sleep(1-(avgpid//100.))
                     state['heating'] = False
+                    sleep(heating_interval-(pidval//100.))
                 else:
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
-                    sleep(1)
+                    sleep(heating_interval)
     finally:
         GPIO.output(conf.he_pin, 0)
         GPIO.cleanup()
@@ -55,7 +56,7 @@ def pid_loop(dummy, state):
 
     pid = PID.PID(state['Kp'], state['Ki'], state['Kd'])
     pid.SetPoint = state['settemp']
-    pid.setSampleTime(conf.sample_time*5)
+    pid.setSampleTime(conf.sample_time)
 
     nanct = 0
     i = 0
@@ -63,14 +64,15 @@ def pid_loop(dummy, state):
     avgpid = 0.
     temphist = [0., 0., 0., 0., 0.]
     avgtemp = 0.
-    lasttime = time()
-    sleeptime = 0
     circuitBreaker = False
     timeSinceLastSteam = None
 
     try:
         while True:  # Loops 10x/second
-            pid = PID.PID(state['Kp'], state['Ki'], state['Kd'])
+            pid.setKp(state['Kp'])
+            pid.setKi(state['Ki'])
+            pid.setKd(state['Kd'])
+
             temp = sensor.temperature
             steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam)
             state['steam'] = steam
@@ -97,11 +99,10 @@ def pid_loop(dummy, state):
             elif not steam and state['settemp'] != pid.SetPoint:
                 pid.SetPoint = state['settemp']
 
-            if i % 10 == 0:
-                pid.update(avgtemp)
-                pidout = pid.output
-                pidhist[i//10 % 10] = pidout
-                avgpid = sum(pidhist)//len(pidhist)
+            pid.update(avgtemp)
+            pidout = pid.output
+            pidhist[i % 5] = pidout
+            avgpid = sum(pidhist)//len(pidhist)
 
             state['i'] = i
             state['temp'] = temp
@@ -119,12 +120,8 @@ def pid_loop(dummy, state):
             if i % 10 == 0:
                 printState(state)
 
-            sleeptime = lasttime+conf.sample_time-time()
-            if sleeptime < 0:
-                sleeptime = 0
-            sleep(sleeptime)
+            sleep(conf.sample_time)
             i += 1
-            lasttime = time()
 
     finally:
         GPIO.cleanup()
@@ -153,6 +150,7 @@ if __name__ == '__main__':
     pidstate['steamtemp'] = conf.set_steam_temp
     pidstate['circuitBreaker'] = None
     pidstate['steam'] = False
+    pidstate['pidval'] = 0.
     pidstate['avgpid'] = 0.
     pidstate['Kp'] = conf.P
     pidstate['Ki'] = conf.I
