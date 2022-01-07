@@ -87,7 +87,6 @@ Returns JSON of all the following statistics:
 * iscold : True if the temp was <120°F in the last 15 minutes
 * hestat : 0 if heating element is currently off, 1 if heating element is currently on
 * pidval : PID output from the last cycle
-* avgpid : Average PID output over the last 10 cycles (1 second)
 * pterm : PID P Term value (Proportional error)
 * iterm : PID I Term value (Integral error)
 * dterm : PID D Term value (Derivative error)

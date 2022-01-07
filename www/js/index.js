@@ -6,7 +6,6 @@ var pterm = new TimeSeries();
 var iterm = new TimeSeries();
 var dterm = new TimeSeries();
 var pidval = new TimeSeries();
-var avgpid = new TimeSeries();
 var lastreqdone = 1;
 var timeout;
 
@@ -248,14 +247,12 @@ setInterval(function () {
 				iterm.append(new Date().getTime(), resp.iterm);
 				dterm.append(new Date().getTime(), resp.dterm);
 				pidval.append(new Date().getTime(), resp.pidval);
-				avgpid.append(new Date().getTime(), resp.avgpid);
 
 				$("#curtemp").html(resp.temp.toFixed(2));
 				$("#pterm").html(resp.pterm.toFixed(2));
 				$("#iterm").html(resp.iterm.toFixed(2));
 				$("#dterm").html(resp.dterm.toFixed(2));
 				$("#pidval").html(resp.pidval.toFixed(2));
-				$("#avgpid").html(resp.avgpid.toFixed(2));
 				$("#curr-p-value").html(resp.Kp.toFixed(2));
 				$("#curr-i-value").html(resp.Ki.toFixed(2));
 				$("#curr-d-value").html(resp.Kd.toFixed(2));
@@ -291,6 +288,5 @@ function createTimeline() {
 	pidchart.addTimeSeries(iterm, { lineWidth: 2, strokeStyle: "#00ff00" });
 	pidchart.addTimeSeries(dterm, { lineWidth: 2, strokeStyle: "#0000ff" });
 	pidchart.addTimeSeries(pidval, { lineWidth: 2, strokeStyle: "#2ecac2" });
-	pidchart.addTimeSeries(avgpid, { lineWidth: 2, strokeStyle: "#ff00ff" });
 	pidchart.streamTo(document.getElementById("pidchart"), 500);
 }

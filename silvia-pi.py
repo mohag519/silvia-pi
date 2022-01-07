@@ -39,7 +39,7 @@ def he_control_loop(_, state, timeState):
         GPIO.output(conf.he_pin, 0)
         GPIO.cleanup()
 
-def pid_loop(dummy, state):
+def pid_loop(_, state):
     import sys
     from time import sleep, time
     from math import isnan
@@ -60,8 +60,6 @@ def pid_loop(dummy, state):
 
     nanct = 0
     i = 0
-    pidhist = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
-    avgpid = 0.
     temphist = [0., 0., 0., 0., 0.]
     avgtemp = 0.
     circuitBreaker = False
@@ -101,15 +99,12 @@ def pid_loop(dummy, state):
 
             pid.update(avgtemp)
             pidout = pid.output
-            pidhist[i % 5] = pidout
-            avgpid = sum(pidhist)//len(pidhist)
 
             state['i'] = i
             state['temp'] = temp
             state['avgtemp'] = round(avgtemp, 2)
             state['setpoint'] = pid.SetPoint
             state['pidval'] = round(pidout, 2)
-            state['avgpid'] = round(avgpid, 2)
             state['pterm'] = round(pid.PTerm, 2)
             state['iterm'] = round(pid.ITerm * conf.I, 2)
             state['dterm'] = round(pid.DTerm * conf.D, 2)
@@ -151,7 +146,6 @@ if __name__ == '__main__':
     pidstate['circuitBreaker'] = None
     pidstate['steam'] = False
     pidstate['pidval'] = 0.
-    pidstate['avgpid'] = 0.
     pidstate['Kp'] = conf.P
     pidstate['Ki'] = conf.I
     pidstate['Kd'] = conf.D
