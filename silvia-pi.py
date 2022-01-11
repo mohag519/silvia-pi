@@ -4,11 +4,12 @@ def he_control_loop(_, state, timeState):
     import RPi.GPIO as GPIO
     import config as conf
 
+    GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(conf.he_pin, GPIO.OUT)
     GPIO.output(conf.he_pin, 0)
 
-    heating_interval = 1
+    heating_interval = 0.5
 
     try:
         while True:
@@ -27,10 +28,19 @@ def he_control_loop(_, state, timeState):
                 elif pidval > 0 and pidval < 100:
                     GPIO.output(conf.he_pin, 1)
                     state['heating'] = True
-                    sleep(pidval//100.)
+                    sleep(heating_interval//4)
+
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
-                    sleep(heating_interval-(pidval//100.))
+                    sleep(heating_interval//4)
+
+                    GPIO.output(conf.he_pin, 1)
+                    state['heating'] = True
+                    sleep(heating_interval//4)
+
+                    GPIO.output(conf.he_pin, 0)
+                    state['heating'] = False
+                    sleep(heating_interval//4)
                 else:
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
@@ -60,7 +70,7 @@ def pid_loop(_, state):
 
     nanct = 0
     i = 0
-    temphist = [0., 0., 0., 0., 0.]
+    temphist = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
     avgtemp = 0.
     circuitBreaker = False
     timeSinceLastSteam = None
@@ -85,7 +95,7 @@ def pid_loop(_, state):
             else:
                 nanct = 0
 
-            temphist[i % 5] = temp
+            temphist[i % len(temphist)] = temp
             avgtemp = sum(temphist)//len(temphist)
             
             #circuitbreaker is on
@@ -112,7 +122,7 @@ def pid_loop(_, state):
             state['Ki'] = round(pid.Ki, 2)
             state['Kd'] = round(pid.Kd, 2)
 
-            if i % 10 == 0:
+            if i % 100 == 0:
                 printState(state)
 
             sleep(conf.sample_time)
@@ -218,11 +228,13 @@ if __name__ == '__main__':
             else:
                 if healthcheck.getcode() != 200:
                     weberrflag = 1
+                else:
+                    weberrflag = 0
 
             if weberrflag != 0:
                 weberr = weberr + 1
 
-            if weberr > 9:
+            if weberr > 99:
                 print ('ERROR IN WEB SERVER THREAD, RESTARTING')
                 r.terminate()
 

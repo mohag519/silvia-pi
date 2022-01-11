@@ -29,7 +29,6 @@ def timer(state):
     t_offSu = datetime.strptime(state['TimerOffSu'],'%H:%M')
 
     if override == True:
-        print("override is TRUE")
         return True
         
     if t_onMo <= now and t_offMo >= now and weekday == 0:

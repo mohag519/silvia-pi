@@ -65,11 +65,14 @@ def rest_server(dummy, state,timeState):
 
     @post('/pid')
     def setpid():
-        pid = request.json
-        
-        state['Kp'] = float(pid["p"])
-        state['Ki'] = float(pid["i"])
-        state['Kd'] = float(pid["d"])
+        try:
+            pid = request.json
+            
+            state['Kp'] = float(pid["p"])
+            state['Ki'] = float(pid["i"])
+            state['Kd'] = float(pid["d"])
+        except:
+            abort(400, 'Invalid value for PID')
 
     @get('/snooze')
     def get_snooze():
