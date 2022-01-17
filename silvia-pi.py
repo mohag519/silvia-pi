@@ -3,6 +3,7 @@ def he_control_loop(_, state, timeState):
     from time import sleep
     import RPi.GPIO as GPIO
     import config as conf
+    import math
 
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
@@ -26,21 +27,15 @@ def he_control_loop(_, state, timeState):
                     GPIO.output(conf.he_pin, 1)
                     sleep(heating_interval)
                 elif pidval > 0 and pidval < 100:
-                    GPIO.output(conf.he_pin, 1)
-                    state['heating'] = True
-                    sleep(heating_interval//4)
-
-                    GPIO.output(conf.he_pin, 0)
-                    state['heating'] = False
-                    sleep(heating_interval//4)
+                    closest_ten = math.ceil(pidval / 10) // 10 # ex: 63.3 => 0.7
 
                     GPIO.output(conf.he_pin, 1)
                     state['heating'] = True
-                    sleep(heating_interval//4)
+                    sleep(heating_interval * closest_ten)
 
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
-                    sleep(heating_interval//4)
+                    sleep(heating_interval - heating_interval*closest_ten)
                 else:
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
@@ -96,7 +91,7 @@ def pid_loop(_, state):
                 nanct = 0
 
             temphist[i % len(temphist)] = temp
-            avgtemp = sum(temphist)//len(temphist)
+            avgtemp = sum(temphist)/len(temphist)
             
             #circuitbreaker is on
             if circuitBreaker:

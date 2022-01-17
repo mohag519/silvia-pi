@@ -55,9 +55,9 @@ high_temp_s = 160
 sample_time = 0.1
 
 # PID Proportional, Integral, and Derivative value
-P = 8.
-I = 3.6
-D = 20.
+P = 10
+I = 3
+D = 100.0
 
 #Web/REST Server Options
 host = '0.0.0.0'
