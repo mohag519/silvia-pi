@@ -23,27 +23,6 @@ function refreshinputs() {
 			$("#d-value").val(resp.Kd);
 		},
 	});
-	$.getJSON({
-		url: "/alltime",
-		timeout: 500,
-		success: function (resp) {
-			console.log(resp);
-			$("#inputTimerOnMo").val(resp.TimerOnMo);
-			$("#inputTimerOffMo").val(resp.TimerOffMo);
-			$("#inputTimerOnTu").val(resp.TimerOnTu);
-			$("#inputTimerOffTu").val(resp.TimerOffTu);
-			$("#inputTimerOnWe").val(resp.TimerOnWe);
-			$("#inputTimerOffWe").val(resp.TimerOffWe);
-			$("#inputTimerOnTh").val(resp.TimerOnTh);
-			$("#inputTimerOffTh").val(resp.TimerOffTh);
-			$("#inputTimerOnFr").val(resp.TimerOnFr);
-			$("#inputTimerOffFr").val(resp.TimerOffFr);
-			$("#inputTimerOnSa").val(resp.TimerOnSa);
-			$("#inputTimerOffSa").val(resp.TimerOffSa);
-			$("#inputTimerOnSu").val(resp.TimerOnSu);
-			$("#inputTimerOffSu").val(resp.TimerOffSu);
-		},
-	});
 }
 
 function resettimer() {
@@ -102,51 +81,25 @@ $(document).ready(function () {
 	});
 
 	$("[id$=-value]").change(function () {
-		$.ajax({ 
-			type:"POST",
+		$.ajax({
+			type: "POST",
 			contentType: "application/json",
-			url:"/pid",
-			data: JSON.stringify({ 
-				p: $("#p-value").val(), 
-				i: $("#i-value").val(), 
-				d: $("#d-value").val() 
-			})
+			url: "/pid",
+			data: JSON.stringify({
+				p: $("#p-value").val(),
+				i: $("#i-value").val(),
+				d: $("#d-value").val(),
+			}),
 		});
 	});
-	
-  $("#inputSleep").change(function(){
-    $.post(
-      "/setsleep",
-      { sleep: $("#inputSleep").val() }
-    );
-  });
 
-  $("#inputWake").change(function(){
-    $.post(
-      "/setwake",
-      { wake: $("#inputWake").val() }
-    );
-  });
+	$("#inputSleep").change(function () {
+		$.post("/setsleep", { sleep: $("#inputSleep").val() });
+	});
 
-  $("#btnTimerDisable").click(function(){
-    $.post("/scheduler",{ scheduler: "False" });
-    $("#inputWake").hide();
-    $("#labelWake").hide();
-    $("#inputSleep").hide();
-    $("#labelSleep").hide();
-    $("#btnTimerDisable").hide();
-    $("#btnTimerEnable").show();
-  });
-
-  $("#btnTimerEnable").click(function(){
-    $.post("/scheduler",{ scheduler: "True" });
-    $("#inputWake").show();
-    $("#labelWake").show();
-    $("#inputSleep").show();
-    $("#labelSleep").show();
-    $("#btnTimerDisable").show();
-    $("#btnTimerEnable").hide();
-  });
+	$("#inputWake").change(function () {
+		$.post("/setwake", { wake: $("#inputWake").val() });
+	});
 
 	$("#btnSnooze").click(function () {
 		$.post("/snooze", { snooze: $("#inputSnooze").val() });
@@ -158,63 +111,6 @@ $(document).ready(function () {
 		$.post("/resetsnooze");
 		$("#btnSnooze").show();
 		$("#btnSnoozeC").hide();
-	});
-
-	$("#inputTimerOnMo").change(function () {
-		console.log("changing timer on", $("#inputTimerOnMo").val());
-		$.post("/TimerOnMo", { TimerOnMo: $("#inputTimerOnMo").val() });
-	});
-
-	$("#inputTimerOffMo").change(function () {
-		$.post("/TimerOffMo", { TimerOffMo: $("#inputTimerOffMo").val() });
-	});
-
-	$("#inputTimerOnTu").change(function () {
-		$.post("/TimerOnTu", { TimerOnTu: $("#inputTimerOnTu").val() });
-	});
-
-	$("#inputTimerOffTu").change(function () {
-		$.post("/TimerOffTu", { TimerOffTu: $("#inputTimerOffTu").val() });
-	});
-
-	$("#inputTimerOnWe").change(function () {
-		$.post("/TimerOnWe", { TimerOnWe: $("#inputTimerOnWe").val() });
-	});
-
-	$("#inputTimerOffWe").change(function () {
-		$.post("/TimerOffWe", { TimerOffWe: $("#inputTimerOffWe").val() });
-	});
-
-	$("#inputTimerOnTh").change(function () {
-		$.post("/TimerOnTh", { TimerOnTh: $("#inputTimerOnTh").val() });
-	});
-
-	$("#inputTimerOffTh").change(function () {
-		$.post("/TimerOffTh", { TimerOffTh: $("#inputTimerOffTh").val() });
-	});
-
-	$("#inputTimerOnFr").change(function () {
-		$.post("/TimerOnFr", { TimerOnFr: $("#inputTimerOnFr").val() });
-	});
-
-	$("#inputTimerOffFr").change(function () {
-		$.post("/TimerOffFr", { TimerOffFr: $("#inputTimerOffFr").val() });
-	});
-
-	$("#inputTimerOnSa").change(function () {
-		$.post("/TimerOnSa", { TimerOnSa: $("#inputTimerOnSa").val() });
-	});
-
-	$("#inputTimerOffSa").change(function () {
-		$.post("/TimerOffSa", { TimerOffSa: $("#inputTimerOffSa").val() });
-	});
-
-	$("#inputTimerOnSu").change(function () {
-		$.post("/TimerOnSu", { TimerOnSu: $("#inputTimerOnSu").val() });
-	});
-
-	$("#inputTimerOffSu").change(function () {
-		$.post("/TimerOffSu", { TimerOffSu: $("#inputTimerOffSu").val() });
 	});
 });
 
@@ -256,7 +152,6 @@ setInterval(function () {
 				$("#curr-p-value").html(resp.Kp.toFixed(2));
 				$("#curr-i-value").html(resp.Ki.toFixed(2));
 				$("#curr-d-value").html(resp.Kd.toFixed(2));
-				
 			},
 			complete: function () {
 				lastreqdone = 1;

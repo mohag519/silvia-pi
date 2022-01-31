@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import json
 
-def rest_server(dummy, state,timeState):
+def rest_server(dummy, state):
     from utility import utility
     from bottle import route, run, get, post, request, static_file, abort
     from subprocess import call
@@ -98,10 +98,6 @@ def rest_server(dummy, state,timeState):
     def allstats():
         return dict(state)
 
-    @get('/alltime')
-    def alltime():
-        return dict(timeState)
-
     @route('/restart')
     def restart():
         call(["reboot"])
@@ -115,159 +111,5 @@ def rest_server(dummy, state,timeState):
     @get('/healthcheck')
     def healthcheck():
         return 'OK'
-
-    @post('/TimerOnMo')
-    def post_TimerOnMo():
-        TimerOnMo = request.forms.get('TimerOnMo')
-        try:
-            datetime.strptime(TimerOnMo,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnMo'] = TimerOnMo
-        return str(TimerOnMo)
-
-    @post('/TimerOnTu')
-    def post_TimerOnTu():
-        TimerOnTu = request.forms.get('TimerOnTu')
-        try:
-            datetime.strptime(TimerOnTu,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnTu'] = TimerOnTu
-        return str(TimerOnTu)
-
-    @post('/TimerOnWe')
-    def post_TimerOnWe():
-        TimerOnWe = request.forms.get('TimerOnWe')
-        try:
-            datetime.strptime(TimerOnWe,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnWe'] = TimerOnWe
-        return str(TimerOnWe)
-
-    @post('/TimerOnTh')
-    def post_TimerOnTh():
-        TimerOnTh = request.forms.get('TimerOnTh')
-        try:
-            datetime.strptime(TimerOnTh,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnTh'] = TimerOnTh
-        return str(TimerOnTh)
-
-    @post('/TimerOnFr')
-    def post_TimerOnFr():
-        TimerOnFr = request.forms.get('TimerOnFr')
-        try:
-            datetime.strptime(TimerOnFr,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnFr'] = TimerOnFr
-        return str(TimerOnFr)
-
-    @post('/TimerOnSa')
-    def post_TimerOnSa():
-        TimerOnSa = request.forms.get('TimerOnSa')
-        try:
-            datetime.strptime(TimerOnSa,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnSa'] = TimerOnSa
-        return str(TimerOnSa)
-
-    @post('/TimerOnSu')
-    def post_TimerOnSu():
-        TimerOnSu = request.forms.get('TimerOnSu')
-        try:
-            datetime.strptime(TimerOnSu,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOnSu'] = TimerOnSu
-        return str(TimerOnSu)
-
-    @post('/TimerOffMo')
-    def post_TimerOffMo():
-        TimerOffMo = request.forms.get('TimerOffMo')
-        try:
-            datetime.strptime(TimerOffMo,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffMo'] = TimerOffMo
-        return str(TimerOffMo)
-
-    @post('/TimerOffTu')
-    def post_TimerOffTu():
-        TimerOffTu = request.forms.get('TimerOffTu')
-        try:
-            datetime.strptime(TimerOffTu,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffTu'] = TimerOffTu
-        return str(TimerOffTu)
-
-    @post('/TimerOffWe')
-    def post_TimerOffWe():
-        TimerOffWe = request.forms.get('TimerOffWe')
-        try:
-            datetime.strptime(TimerOffWe,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffWe'] = TimerOffWe
-        return str(TimerOffWe)
-
-    @post('/TimerOffTh')
-    def post_TimerOffTh():
-        TimerOffTh = request.forms.get('TimerOffTh')
-        try:
-            datetime.strptime(TimerOffTh,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffTh'] = TimerOffTh
-        return str(TimerOffTh)
-
-    @post('/TimerOffFr')
-    def post_TimerOffFr():
-        TimerOffFr = request.forms.get('TimerOffFr')
-        try:
-            datetime.strptime(TimerOffFr,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffFr'] = TimerOffFr
-        return str(TimerOffFr)
-
-    @post('/TimerOffSa')
-    def post_TimerOffSa():
-        TimerOffSa = request.forms.get('TimerOffSa')
-        try:
-            datetime.strptime(TimerOffSa,'%H:%M')
-        except:
-            pass
-    #       abort(400,'Invalid time format.')
-        timeState['TimerOffSa'] = TimerOffSa
-        return str(TimerOffSa)
-
-    @post('/TimerOffSu')
-    def post_TimerOffSu():
-        TimerOffSu = request.forms.get('TimerOffSu')
-        try:
-            datetime.strptime(TimerOffSu,'%H:%M')
-        except:
-            pass
-        timeState['TimerOffSu'] = TimerOffSu
-        return str(TimerOffSu)
-
 
     run(host=conf.host, port=conf.port)

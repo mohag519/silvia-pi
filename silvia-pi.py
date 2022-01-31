@@ -1,5 +1,5 @@
 #!/usr/bin/python
-def he_control_loop(_, state, timeState):
+def he_control_loop(_, state):
     from time import sleep
     import RPi.GPIO as GPIO
     import config as conf
@@ -14,7 +14,6 @@ def he_control_loop(_, state, timeState):
 
     try:
         while True:
-            state['awake'] = timer.timer(timeState)
             pidval = state['pidval']
             
             if not state['awake'] or state['circuitBreaker']:
@@ -46,7 +45,7 @@ def he_control_loop(_, state, timeState):
 
 def pid_loop(_, state):
     import sys
-    from time import sleep, time
+    from time import sleep
     from math import isnan
     import adafruit_max31855 as MAX31855
     import board
@@ -55,7 +54,7 @@ def pid_loop(_, state):
     from brewOrSteaming import steaming
     import RPi.GPIO as GPIO
     import digitalio
-
+    
     sensorPin = digitalio.DigitalInOut(conf.thermo_pin)
     sensor = MAX31855.MAX31855(board.SPI(), sensorPin)
 
@@ -71,7 +70,7 @@ def pid_loop(_, state):
     timeSinceLastSteam = None
 
     try:
-        while True:  # Loops 10x/second
+        while True:  # Loops every <sample-time>
             pid.setKp(state['Kp'])
             pid.setKi(state['Ki'])
             pid.setKd(state['Kd'])
@@ -117,7 +116,7 @@ def pid_loop(_, state):
             state['Ki'] = round(pid.Ki, 2)
             state['Kd'] = round(pid.Kd, 2)
 
-            if i % 100 == 0:
+            if i % 10 == 0:
                 printState(state)
 
             sleep(conf.sample_time)
@@ -137,7 +136,6 @@ if __name__ == '__main__':
     from time import sleep
     from urllib.request import urlopen
     import config as conf
-    import timer
     from restServer import rest_server
     import RPi.GPIO as GPIO
 
@@ -155,35 +153,17 @@ if __name__ == '__main__':
     pidstate['Ki'] = conf.I
     pidstate['Kd'] = conf.D
 
-    timeState = manager.dict()    
-    timeState['TimerOnMo'] = conf.TimerOnMo
-    timeState['TimerOffMo'] = conf.TimerOffMo
-    timeState['TimerOnTu'] = conf.TimerOnTu
-    timeState['TimerOffTu'] = conf.TimerOffTu
-    timeState['TimerOnWe'] = conf.TimerOnWe
-    timeState['TimerOffWe'] = conf.TimerOffWe
-    timeState['TimerOnTh'] = conf.TimerOnTh
-    timeState['TimerOffTh'] = conf.TimerOffTh
-    timeState['TimerOnFr'] = conf.TimerOnFr
-    timeState['TimerOffFr'] = conf.TimerOffFr
-    timeState['TimerOnSa'] = conf.TimerOnSa
-    timeState['TimerOffSa'] = conf.TimerOffSa
-    timeState['TimerOnSu'] = conf.TimerOnSu
-    timeState['TimerOffSu'] = conf.TimerOffSu
-
-    # timeState['override'] = conf.always_override
-
-    pidstate['awake'] = timer.timer(timeState)
+    pidstate['awake'] = True
 
     p = Process(target=pid_loop, args=(1, pidstate))
     p.daemon = True
     p.start()
 
-    h = Process(target=he_control_loop, args=(1, pidstate, timeState))
+    h = Process(target=he_control_loop, args=(1, pidstate))
     h.daemon = True
     h.start()
 
-    r = Process(target=rest_server, args=(1, pidstate, timeState))
+    r = Process(target=rest_server, args=(1, pidstate))
     r.daemon = True
     r.start()
 

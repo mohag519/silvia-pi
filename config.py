@@ -27,23 +27,6 @@ snooze = '07:00'
 #circuit breaker time in minutes convert to seconds
 circuitBreakerTime = 20 * 60
 
-#TODO: Change this into a matrix.
-TimerOnMo = '08:40'
-TimerOffMo = '10:00'
-TimerOnTu = '08:40'
-TimerOffTu = '10:00'
-TimerOnWe = '08:40'
-TimerOffWe = '10:00'
-TimerOnTh = '08:40'
-TimerOffTh = '10:00'
-TimerOnFr = '08:40'
-TimerOffFr = '10:00'
-TimerOnSa = '10:00'
-TimerOffSa = '12:00'
-TimerOnSu = '10:00'
-TimerOffSu = '12:00'
-
-
 #temp lowpoint and high point (Celsius)
 low_temp_b = 0
 high_temp_b = 110
