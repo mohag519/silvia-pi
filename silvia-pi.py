@@ -3,7 +3,6 @@ def he_control_loop(_, state):
     from time import sleep
     import RPi.GPIO as GPIO
     import config as conf
-    import math
 
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
@@ -21,20 +20,20 @@ def he_control_loop(_, state):
                 GPIO.output(conf.he_pin, 0)
                 sleep(heating_interval)
             else:
-                if pidval >= 100:
+                if pidval >= 50:
                     state['heating'] = True
                     GPIO.output(conf.he_pin, 1)
                     sleep(heating_interval)
-                elif pidval > 0 and pidval < 100:
-                    closest_ten = math.ceil(pidval / 10) // 10 # ex: 63.3 => 0.7
+                elif pidval > 0 and pidval < 50:
+                    #closest_ten = math.ceil(pidval * 10 / 50) // 10 # ex: 63.3 => 0.7
 
                     GPIO.output(conf.he_pin, 1)
                     state['heating'] = True
-                    sleep(heating_interval * closest_ten)
+                    sleep(heating_interval * (pidval / 50))
 
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
-                    sleep(heating_interval - heating_interval*closest_ten)
+                    sleep(heating_interval - heating_interval * (pidval / 50))
                 else:
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
@@ -47,16 +46,11 @@ def pid_loop(_, state):
     import sys
     from time import sleep
     from math import isnan
-    import adafruit_max31855 as MAX31855
-    import board
+    import Adafruit_ADS1x15 as ADS1x15
     import PID as PID
     import config as conf
     from brewOrSteaming import steaming
-    import RPi.GPIO as GPIO
-    import digitalio
-    
-    sensorPin = digitalio.DigitalInOut(conf.thermo_pin)
-    sensor = MAX31855.MAX31855(board.SPI(), sensorPin)
+    import RPi.GPIO as GPIO    
 
     pid = PID.PID(state['Kp'], state['Ki'], state['Kd'])
     pid.SetPoint = state['settemp']
@@ -69,13 +63,19 @@ def pid_loop(_, state):
     circuitBreaker = False
     timeSinceLastSteam = None
 
+    adc = ADS1x15.ADS1115()
+    
     try:
         while True:  # Loops every <sample-time>
             pid.setKp(state['Kp'])
             pid.setKi(state['Ki'])
             pid.setKd(state['Kd'])
 
-            temp = sensor.temperature
+            temp = read_temperature(adc)
+            
+            if(conf.pressure_enable):
+                pressure = read_pressure(adc)
+            
             steam,circuitBreaker,timeSinceLastSteam = steaming(timeSinceLastSteam)
             state['steam'] = steam
             state['circuitBreaker'] = circuitBreaker
@@ -106,6 +106,8 @@ def pid_loop(_, state):
 
             state['i'] = i
             state['temp'] = temp
+            if conf.pressure_enable :
+                state['pressure'] = pressure
             state['avgtemp'] = round(avgtemp, 2)
             state['setpoint'] = pid.SetPoint
             state['pidval'] = round(pidout, 2)
@@ -118,14 +120,50 @@ def pid_loop(_, state):
 
             if i % 10 == 0:
                 printState(state)
-
+                
             sleep(conf.sample_time)
             i += 1
 
     finally:
         GPIO.cleanup()
-        sensorPin.deinit()
         pid.clear
+
+def read_temperature(adc):
+    averageFactor = 3
+    tempAvg = [0 for _ in range(averageFactor)]
+    # Choose a gain of 1 for reading voltages from 0 to 4.09V.
+    # Or pick a different gain to change the range of voltages that are read:
+    #  - 2/3 = +/-6.144V
+    #  -   1 = +/-4.096V
+    #  -   2 = +/-2.048V
+    #  -   4 = +/-1.024V
+    #  -   8 = +/-0.512V
+    #  -  16 = +/-0.256V
+    # See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
+    GAIN = 2
+    for i in range(averageFactor):
+        vOut = (adc.read_adc(0, GAIN) * 2.048) / 32767 
+        #Temperature = (Vout - 1.25) / 0.005 V
+        tempAvg[i] = (vOut - 1.25) / 0.005 - 4 #I have no idea why it's 4 degrees off
+    return sum(tempAvg)/averageFactor
+
+def read_pressure(adc):
+    averageFactor = 1
+    pressureAvg = [0 for _ in range(averageFactor)]
+    # Choose a gain of 1 for reading voltages from 0 to 4.09V.
+    # Or pick a different gain to change the range of voltages that are read:
+    #  - 2/3 = +/-6.144V
+    #  -   1 = +/-4.096V
+    #  -   2 = +/-2.048V
+    #  -   4 = +/-1.024V
+    #  -   8 = +/-0.512V
+    #  -  16 = +/-0.256V
+    # See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
+    GAIN = 2/3
+    for i in range(averageFactor):
+        vOut = (adc.read_adc(1, GAIN) * 6.144) / 32767
+        pressureAvg[i] = (vOut / 5) * 10
+    return sum(pressureAvg) / averageFactor
 
 def printState(state):
     for key, value in state.items():

@@ -12,7 +12,7 @@ steam_pin = 22
 always_override = True
 override_pin = 19
 
-led_pin = 6
+led_pin = 13
 
 # Default goal temperature
 set_temp = 96.
@@ -23,6 +23,9 @@ use_fahrenheit = False
 
 # Default alarm time
 snooze = '07:00'
+
+# Pressure gauge
+pressure_enable = True
 
 #circuit breaker time in minutes convert to seconds
 circuitBreakerTime = 20 * 60
@@ -39,8 +42,8 @@ sample_time = 0.1
 
 # PID Proportional, Integral, and Derivative value
 P = 10
-I = 3
-D = 100.0
+I = 1.5
+D = 20.0
 
 #Web/REST Server Options
 host = '0.0.0.0'
