@@ -24,29 +24,40 @@
 				/>Silvia Pi <small>Dashboard</small>
 			</h1>
 			<div class="center-block">
-				<div id="fullrow" class="row">
-					<div class="col-xs-12">
-						<canvas id="chart"></canvas>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<h5 class="text-right">
-							Current Temp: <span id="curtemp">00.00</span> °C
-						</h5>
-					</div>
-				</div>
 				<div class="row form-inline">
-					<div class="form-group col-sm-6">
+					<div class="form-group col-xs-6">
 						<label for="inputSetTemp" class="control-label">
 							Brew Temp:
 						</label>
 						<div class="input-group">
 							<input type="number" class="form-control" id="inputSetTemp" lang="en" />
-							<div class="input-group-addon">°C</div>
+							<div class="input-group-addon"><span id="curtemp">00.00</span> °C</div>
 						</div>
 					</div>
-					<div class="form-group col-sm-6">
+					<div class="col-xs-6 text-center">
+						<strong>Brew Time:</strong>
+						<p id="brewtime" style="font-size: 3rem;">--:--</p>
+					</div>
+				</div>
+
+				<div id="fullrow" class="row">
+					<div class="col-xs-12">
+						<canvas id="chart"></canvas>
+					</div>
+				</div>
+
+				<div id="toggleadv" class="row text-right">
+					<div class="col-xs-12">
+						<button type="button" class="btn btn-default btn-sm">
+							<span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+							Advanced settings
+						</button>
+					</div>
+				</div>
+			</div>
+			<div id="advanced">
+				<div class="row form-inline">
+					<div class="form-group col-sm-3">
 						<label for="inputSetSteamTemp" class="control-label">
 							Steam Temp:
 						</label>
@@ -60,9 +71,7 @@
 							<div class="input-group-addon">°C</div>
 						</div>
 					</div>
-				</div>
-				<div class="row form-inline">
-					<div class="form-group col-sm-4">
+					<div class="form-group col-sm-3">
 						<label for="p-value" class="control-label">
 							P:
 						</label>
@@ -77,7 +86,7 @@
 							<div class="input-group-addon" id="curr-p-value">0</div>
 						</div>
 					</div>
-					<div class="form-group col-sm-4">
+					<div class="form-group col-sm-3">
 						<label for="i-value" class="control-label">
 							I:
 						</label>
@@ -92,7 +101,7 @@
 							<div class="input-group-addon" id="curr-i-value">0</div>
 						</div>
 					</div>
-					<div class="form-group col-sm-4">
+					<div class="form-group col-sm-3">
 						<label for="d-value" class="control-label">
 							D:
 						</label>
@@ -108,33 +117,34 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="center-block adv">
-				<div class="row">
-					<div class="col-xs-12">
-						<canvas id="pidchart"></canvas>
+
+				<div class="center-block">
+					<div class="row">
+						<div class="col-xs-12">
+							<canvas id="pidchart"></canvas>
+						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-3">
-						<h5>
-							P Term: <span id="pterm" style="color: #ff0000">00.00</span>
-						</h5>
-					</div>
-					<div class="col-xs-3">
-						<h5>
-							I Term: <span id="iterm" style="color: #00ff00">00.00</span>
-						</h5>
-					</div>
-					<div class="col-xs-3">
-						<h5>
-							D Term: <span id="dterm" style="color: #0000ff">00.00</span>
-						</h5>
-					</div>
-					<div class="col-xs-3">
-						<h5>
-							Pid Val: <span id="pidval" style="color: #2ecac2">00.00</span>
-						</h5>
+					<div class="row">
+						<div class="col-xs-3">
+							<h5>
+								P Term: <span id="pterm" style="color: #ff0000">00.00</span>
+							</h5>
+						</div>
+						<div class="col-xs-3">
+							<h5>
+								I Term: <span id="iterm" style="color: #00ff00">00.00</span>
+							</h5>
+						</div>
+						<div class="col-xs-3">
+							<h5>
+								D Term: <span id="dterm" style="color: #0000ff">00.00</span>
+							</h5>
+						</div>
+						<div class="col-xs-3">
+							<h5>
+								Pid Val: <span id="pidval" style="color: #2ecac2">00.00</span>
+							</h5>
+						</div>
 					</div>
 				</div>
 			</div>

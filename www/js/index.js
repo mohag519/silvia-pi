@@ -42,12 +42,6 @@ function onresize() {
 	$("#chart").attr("height", h);
 	$("#pidchart").attr("width", $("#fullrow").width() - 30);
 	$("#pidchart").attr("height", h);
-
-	if ($(document).width() < 600) {
-		$("#toggleadv").html("Adv Stats");
-	} else {
-		$("#toggleadv").html("Advanced Stats");
-	}
 }
 
 $(document).ready(function () {
@@ -60,14 +54,9 @@ $(document).ready(function () {
 
 	createTimeline();
 
-	//$(".adv").hide();
+	$("#advanced").hide();
 	$("#toggleadv").click(function () {
-		$(".adv").toggle();
-	});
-
-	// $(".timer").hide();
-	$("#btnSchedule").click(() => {
-		$(".timer").toggle();
+		$("#advanced").toggle();
 	});
 
 	refreshinputs();
@@ -120,6 +109,17 @@ setInterval(function () {
 			url: "/allstats",
 			timeout: 500,
 			success: function (resp) {
+
+				var brewtime = resp.brewtime;
+				var brewtimeString = "--:--:--";
+				
+				if(brewtime != 0) {
+					var brewDateTime = new Date(null, null, null, null, null, brewtime);
+					var brewtimeString = String(brewDateTime.getMinutes()).padStart(2, "0") + ":" + String(brewDateTime.getSeconds()).padStart(2, "0") + ":" + String(brewtime % 1).substring(2, 4)
+				}
+
+				$("#brewtime").text(brewtimeString);
+
 				if (resp.snoozeon == true) {
 					$("#btnSnooze").hide();
 					$("#btnSnoozeC").show();

@@ -1,17 +1,12 @@
 #!/usr/bin/python
-import board
+
 #PIN 0-8 3v3 pull-up default, 9-27 pull-down default
 
 # Pin # for relay connected to heating element (Note: GPIO pin#)
 he_pin = 26
 
-thermo_pin = board.D5
-steam_pin = 22
-
-#overriding strictly or through pin for scheduled heating. 'True' or pin=on means always on.
-always_override = True
-override_pin = 19
-
+brew_pin = 22
+steam_pin = 27
 led_pin = 13
 
 # Default goal temperature

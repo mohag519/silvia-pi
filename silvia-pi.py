@@ -1,4 +1,8 @@
 #!/usr/bin/python
+
+from datetime import timedelta
+
+
 def he_control_loop(_, state):
     from time import sleep
     import RPi.GPIO as GPIO
@@ -38,13 +42,14 @@ def he_control_loop(_, state):
                     GPIO.output(conf.he_pin, 0)
                     state['heating'] = False
                     sleep(heating_interval)
+    
     finally:
         GPIO.output(conf.he_pin, 0)
         GPIO.cleanup()
 
 def pid_loop(_, state):
     import sys
-    from time import sleep
+    import time
     from math import isnan
     import Adafruit_ADS1x15 as ADS1x15
     import PID as PID
@@ -52,9 +57,19 @@ def pid_loop(_, state):
     from brewOrSteaming import steaming
     import RPi.GPIO as GPIO    
 
+
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(conf.brew_pin,GPIO.IN,GPIO.PUD_DOWN)
+
     pid = PID.PID(state['Kp'], state['Ki'], state['Kd'])
     pid.SetPoint = state['settemp']
     pid.setSampleTime(conf.sample_time)
+    
+    brew_pin = GPIO.input(conf.brew_pin)
+    start_time = None
+    end_time = None
+    timeDiff = 0
 
     nanct = 0
     i = 0
@@ -103,6 +118,24 @@ def pid_loop(_, state):
 
             pid.update(avgtemp)
             pidout = pid.output
+
+            #Calculating brewtime
+            new_brew_pin = GPIO.input(conf.brew_pin)
+            if new_brew_pin != brew_pin:
+                brew_pin = new_brew_pin
+                if new_brew_pin == GPIO.HIGH:
+                    start_time = time.time()
+                    end_time = None
+                elif start_time != None:
+                    end_time = time.time()
+                    timeDiff = end_time - start_time
+            elif start_time != None:
+                if end_time == None:
+                    timeDiff =  time.time() - start_time
+                else:
+                    timeDiff = end_time - start_time
+                    
+            state['brewtime'] = timeDiff
 
             state['i'] = i
             state['temp'] = temp
@@ -167,7 +200,8 @@ def read_pressure(adc):
 
 def printState(state):
     for key, value in state.items():
-        print(f'{key} : {value}')
+        if key == 'brewtime':
+            print(f'{key} : {value}')
 
 if __name__ == '__main__':
     from multiprocessing import Process, Manager
@@ -178,30 +212,31 @@ if __name__ == '__main__':
     import RPi.GPIO as GPIO
 
     manager = Manager()
-    pidstate = manager.dict()
-    pidstate['snooze'] = conf.snooze
-    pidstate['snoozeon'] = False
-    pidstate['i'] = 0
-    pidstate['settemp'] = conf.set_temp
-    pidstate['steamtemp'] = conf.set_steam_temp
-    pidstate['circuitBreaker'] = None
-    pidstate['steam'] = False
-    pidstate['pidval'] = 0.
-    pidstate['Kp'] = conf.P
-    pidstate['Ki'] = conf.I
-    pidstate['Kd'] = conf.D
+    state = manager.dict()
+    state['snooze'] = conf.snooze
+    state['snoozeon'] = False
+    state['i'] = 0
+    state['settemp'] = conf.set_temp
+    state['steamtemp'] = conf.set_steam_temp
+    state['circuitBreaker'] = None
+    state['steam'] = False
+    state['pidval'] = 0.
+    state['Kp'] = conf.P
+    state['Ki'] = conf.I
+    state['Kd'] = conf.D
+    state['brewtime'] = None
 
-    pidstate['awake'] = True
+    state['awake'] = True
 
-    p = Process(target=pid_loop, args=(1, pidstate))
+    p = Process(target=pid_loop, args=(1, state))
     p.daemon = True
     p.start()
 
-    h = Process(target=he_control_loop, args=(1, pidstate))
+    h = Process(target=he_control_loop, args=(1, state))
     h.daemon = True
     h.start()
 
-    r = Process(target=rest_server, args=(1, pidstate))
+    r = Process(target=rest_server, args=(1, state))
     r.daemon = True
     r.start()
 
@@ -211,7 +246,7 @@ if __name__ == '__main__':
     weberrflag = 0
     urlhc = 'http://localhost:'+str(conf.port)+'/healthcheck'
 
-    lasti = pidstate['i']
+    lasti = state['i']
     sleep(1)
 
     #Setting up led, will in this case work as a indicator if mainprocess is running
@@ -222,7 +257,7 @@ if __name__ == '__main__':
     try:
         while p.is_alive() and h.is_alive() and r.is_alive():
             GPIO.output(conf.led_pin, 1)
-            curi = pidstate['i']
+            curi = state['i']
             if curi == lasti:
                 piderr = piderr + 1
             else:
